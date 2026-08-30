@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xanter MP3 - Online Music Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="music-icon">🎵</span>
+                <h2>XANTER <span>MP3</span></h2>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="active"><a href="#">🏠 Home</a></li>
+                <li><a href="#">🧭 Explore</a></li>
+                <li><a href="#">🔥 Trending</a></li>
+                <li><a href="#">👥 Artists</a></li>
+                <li><a href="#">💿 Albums</a></li>
+                <li><a href="#">📑 Playlists</a></li>
+                <li><a href="#">📥 Downloads</a></li>
+            </ul>
+        </aside>
+
+        <!-- Eneo Kuu -->
+        <main class="main-content">
+            <header>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tafuta msanii, wimbo...">
+                    <button class="search-btn" id="searchBtn">🔍</button>
+                </div>
+            </header>
+
+            <!-- Hapa ndipo list ya matokeo ya Search ya mtandaoni itakapoonekana -->
+            <div id="searchResults" class="search-results-list"></div>
+
+            <section class="banner">
+                <div class="banner-text">
+                    <h2>Discover & Enjoy Your Favorite Music</h2>
+                    <p>Sikiliza nyimbo mpya, wasanii maarufu na muziki unaoupenda kila siku.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Player Bar ya Chini -->
+    <div class="player-bar">
+        <div class="song-info">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4" alt="Album Art">
+            <div>
+                <h4>Chagua Wimbo</h4>
+                <p>Xanter MP3</p>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <button>🔀</button>
+            <button>⏮️</button>
+            <button class="play-btn">▶</button>
+            <button>⏭️</button>
+            <button>🔁</button>
+        </div>
+
+        <div class="progress-container">
+            <span class="current-time">00:00</span>
+            <input type="range" value="0" class="progress-bar">
+            <span class="total-time">03:00</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
