@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xanter MP3</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .xanter-search-wrapper {
+            position: relative;
+            margin: 15px;
+        }
+        .suggestions-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1f2937;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+            border: 1px solid #374151;
+            border-top: none;
+        }
+        .suggestion-item {
+            padding: 12px 15px;
+            color: #ffffff;
+            border-bottom: 1px solid #374151;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        .suggestion-item:hover {
+            background: #374151;
+        }
+        #xanter-online-results {
+            max-height: 52vh;
+            overflow-y: auto;
+            padding-bottom: 90px;
+        }
+        .xanter-song-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid #2d3748;
+            background: #1a202c;
+            margin: 8px 15px;
+            border-radius: 8px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-play, .btn-dl {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .btn-play { background: #48bb78; color: white; }
+        .btn-dl { background: #4299e1; color: white; }
+        .xanter-nav-tabs button.active {
+            background: #4f46e5 !important;
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="xanter-header">
+        🎵 XANTER <span>MP3</span>
+    </div>
+
+    <div class="xanter-nav-tabs">
+        <button class="xanter-tab active" onclick="badiliTab('home', this)">🏠 Home</button>
+        <button class="xanter-tab" onclick="badiliTab('explore', this)">🧭 Explore</button>
+        <button class="xanter-tab" onclick="badiliTab('trending', this)">🔥 Trending</button>
+        <button class="xanter-tab" onclick="badiliTab('artists', this)">👤 Artists</button>
+    </div>
+
+    <div class="xanter-search-wrapper">
+        <div class="xanter-search-box">
+            <input type="text" id="searchInput" placeholder="Tafuta wimbo, msanii au mtindo..." autocomplete="off">
+            <button id="searchBtn">🔍</button>
+        </div>
+        <div id="suggestionsBox" class="suggestions-box"></div>
+    </div>
+
+    <div class="xanter-banner">
+        <h2 id="bannerTitle">New Release & Hits</h2>
+        <p id="bannerDesc">Sikiliza na udownload nyimbo kali zaidi kwa urahisi kupitia Xanter MP3.</p>
+    </div>
+
+    <div id="xanter-online-results"></div>
+
+    <div class="xanter-player-bar">
+        <div class="player-left">
+            <div class="player-thumb" id="playerThumbIcon">🎤</div>
+            <div class="player-meta">
+                <strong id="currentSongTitle">Chagua Wimbo</strong>
+                <span id="currentArtistName">Xanter MP3</span>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button>🔀</button>
+            <button>⏮️</button>
+            <button class="play-main-btn" id="mainPlayPauseBtn" onclick="togglePlayPause()">▶</button>
+            <button>⏭️</button>
+            <button>🔁</button>
+        </div>
+    </div>
+
+    <script>
+        let audioElement = null;
+        let currentPlayingUrl = null;
+
+        let artistList = [
+            "Diamond Platnumz", "Harmonize", "Alikiba", "Zuchu", 
+            "Nandy", "Rayvanny", "Chris Brown", "Drake", "Wizkid", "Burnaboy", "Rema"
+        ];
+
+        window.onload = function() {
+            pakiaNyimboAPI("Tanzania Music Hits", "Nyimbo Mpya na Kali", "Orodha ya nyimbo mpya zilizotoka sasa hivi.");
+        };
+
+        let searchInput = document.getElementById('searchInput');
+        let suggestionsBox = document.getElementById('suggestionsBox');
+        let searchTimeout = null;
+
+        // Auto-Suggest kupitia iTunes API kulingana na kile mtumiaji anachoandika
+        searchInput.addEventListener('input', function() {
+            let query = this.value.trim();
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                suggestionsBox.style.display = "none";
+                suggestionsBox.innerHTML = "";
+                return;
+            }
+
+            // Tunatoa muda kidogo (debounce) ili isitake API kwenye kila herufi kwa haraka sana
+            searchTimeout = setTimeout(() => {
+                let autoUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=6`;
+                
+                fetch(autoUrl)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = "";
+                        let results = data.results || [];
+
+                        if (results.length > 0) {
+                            suggestionsBox.style.display = "block";
+                            results.forEach(item => {
+                                let songName = item.trackName || "";
+                                let artistName = item.artistName || "";
+                                if(!songName) return;
+
+                                let div = document.createElement('div');
+                                div.className = "suggestion-item";
+                                div.innerHTML = `🎵 <span><strong>${songName}</strong> - <small style="color:#a0aec0;">${artistName}</small></span>`;
+                                
+                                div.onclick = function() {
+                                    searchInput.value = songName + " " + artistName;
+                                    suggestionsBox.style.display = "none";
+                                    pakiaNyimboAPI(searchInput.value, "Matokeo ya Utafutaji", "Matokeo kwa ajili ya: " + searchInput.value);
+                                };
+                                suggestionsBox.appendChild(div);
+                            });
+                        } else {
+                            suggestionsBox.style.display = "none";
+                        }
+                    })
+                    .catch(err => console.log(err));
+            }, 300);
+        });
+
+        // Kufunga kisanduku cha suggestions ukibonyeza nje
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = "none";
+            }
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            let keyword = searchInput.value.trim();
+            suggestionsBox.style.display = "none";
+            if (keyword !== "") {
+                pakiaNyimboAPI(keyword, keyword, "Matokeo ya utafutaji: " + keyword);
+            } else {
+                alert("Tafadhali andika neno la kutafuta!");
+            }
+        });
+
+        function badiliTab(tabName, btnElement) {
+            document.querySelectorAll('.xanter-nav-tabs button').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            suggestionsBox.style.display = "none";
+
+            if (tabName === 'home') {
+                pakiaNyimboAPI("Tanzania Music Hits", "New Release & Hits", "Sikiliza na udownload nyimbo mpya na kali za wiki hii.");
+            } else if (tabName === 'explore') {
+                pakiaNyimboAPI("Bongo Fleva", "Explore Music", "Gundua mitindo mbalimbali ya muziki mtamu.");
+            } else if (tabName === 'trending') {
+                pakiaNyimboAPI("Global Trending Music", "Trending Songs", "Nyimbo zinazovuma na kuongoza kwa kusikilizwa duniani.");
+            } else if (tabName === 'artists') {
+                onyeshaWasanii();
+            }
+        }
+
+        function onyeshaWasanii() {
+            document.getElementById('bannerTitle').innerText = "Top Artists";
+            document.getElementById('bannerDesc').innerText = "Chagua msanii umsikilize kwa urahisi.";
+            
+            let resultsDiv = document.getElementById('xanter-online-results');
+            resultsDiv.innerHTML = "";
+
+            artistList.forEach((artist) => {
+                let row = document.createElement('div');
+                row.className = "xanter-song-row";
+                row.innerHTML = `
+                    <div class="song-info" style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 45px; height: 45px; background: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">👤</div>
+                        <div>
+                            <strong style="color: #fff; display: block; font-size: 15px;">${artist}</strong>
+                            <small style="color: #a0aec0;">Bonyeza kusikiliza nyimbo zake</small>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-play" onclick="pakiaNyimboAPI('${artist}', '${artist} Songs', 'Nyimbo zote kali kutoka kwa ${artist}')">Fungua</button>
+                    </div>
+                `;
+                resultsDiv.appendChild(row);
+            });
+        }
+
+        function pakiaNyimboAPI(query, bannerTitleText, bannerDescText) {
+            document.getElementById('bannerTitle').innerText = bannerTitleText;
+            document.getElementById('bannerDesc').innerText = bannerDescText;
+
+            let resultsDiv = document.getElementById('xanter-online-results');
+            resultsDiv.innerHTML = "<p style='color: #a0aec0; text-align: center; padding: 20px;'>Inapakia nyimbo...</p>";
+
+            let url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=40`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    resultsDiv.innerHTML = "";
+                    let results = data.results ? data.results : [];
+
+                    if (results.length > 0) {
+                        results.forEach((track, index) => {
+                            let trackName = track.trackName || "Wimbo";
+                            let artistName = track.artistName || "Xanter Artist";
+                            let streamUrl = track.previewUrl; 
+                            let artwork = track.artworkUrl100 || "";
+
+                            if (!streamUrl) return;
+
+                            let item = document.createElement('div');
+                            item.className = "xanter-song-row";
+                            
+                            let cleanName = trackName.replace(/'/g, "").replace(/"/g, "");
+                            let cleanArtist = artistName.replace(/'/g, "").replace(/"/g, "");
+                            let btnId = "playBtn_" + index;
+
+                            item.innerHTML = `
+                                <div class="song-info" style="display: flex; align-items: center; gap: 10px;">
+                                    ${artwork ? `<img src="${artwork}" style="width: 45px; height: 45px; border-radius: 6px; object-fit: cover;">` : '<div style="width:45px;height:45px;background:#333;border-radius:6px;display:flex;align-items:center;justify-content:center;">🎵</div>'}
+                                    <div>
+                                        <strong style="color: #fff; display: block; font-size: 14px;">${cleanName}</strong>
+                                        <small style="color: #a0aec0;">${cleanArtist}</small>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn-play" id="${btnId}" onclick="chezaWimbo('${streamUrl}', '${cleanName}', '${cleanArtist}', '${btnId}')">Cheza</button>
+                                    <button class="btn-dl" onclick="pakuaWimbo('${streamUrl}', '${cleanName}')">Download</button>
+                                </div>
+                            `;
+                            resultsDiv.appendChild(item);
+                        });
+                    } else {
+                        resultsDiv.innerHTML = "<p style='color: #a0aec0; text-align: center; padding: 20px;'>Hakuna nyimbo zilizopatikana.</p>";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    resultsDiv.innerHTML = "<p style='color: #f56565; text-align: center; padding: 20px;'>Imeshindikana kuunganisha na mtandao.</p>";
+                });
+        }
+
+        function chezaWimbo(audioUrl, songName, artistName, btnId) {
+            document.querySelectorAll('.btn-play').forEach(b => b.innerText = "Cheza");
+
+            if (audioElement && currentPlayingUrl === audioUrl) {
+                if (audioElement.paused) {
+                    audioElement.play();
+                    document.getElementById(btnId).innerText = "⏸ Simama";
+                    document.getElementById('mainPlayPauseBtn').innerText = "⏸";
+                } else {
+                    audioElement.pause();
+                    document.getElementById(btnId).innerText = "▶ Cheza";
+                    document.getElementById('mainPlayPauseBtn').innerText = "▶";
+                }
+                return;
+            }
+
+            if (audioElement) {
+                audioElement.pause();
+            }
+
+            audioElement = new Audio(audioUrl);
+            currentPlayingUrl = audioUrl;
+
+            audioElement.play().then(() => {
+                document.getElementById(btnId).innerText = "⏸ Simama";
+                document.getElementById('mainPlayPauseBtn').innerText = "⏸";
+                document.getElementById('currentSongTitle').innerText = songName;
+                document.getElementById('currentArtistName').innerText = artistName;
+            }).catch(e => alert("Imeshindikana kucheza wimbo huu!"));
+
+            audioElement.onended = function() {
+                document.getElementById(btnId).innerText = "▶ Cheza";
+                document.getElementById('mainPlayPauseBtn').innerText = "▶";
+            };
+        }
+
+        function togglePlayPause() {
+            if (audioElement) {
+                if (audioElement.paused) {
+                    audioElement.play();
+                    document.getElementById('mainPlayPauseBtn').innerText = "⏸";
+                } else {
+                    audioElement.pause();
+                    document.getElementById('mainPlayPauseBtn').innerText = "▶";
+                }
+            } else {
+                alert("Tafadhali chagua wimbo kwanza!");
+            }
+        }
+
+        function pakuaWimbo(audioUrl, songName) {
+            let a = document.createElement('a');
+            a.href = audioUrl;
+            a.download = songName + ".mp3";
+            a.setAttribute('target', '_blank');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert("Inapakua wimbo: " + songName);
+        }
+    </script>
+</body>
+</html>
