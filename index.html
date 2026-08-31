@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xanter MP3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header ya App -->
+    <div class="xanter-header">
+        🎵 XANTER <span>MP3</span>
+    </div>
+
+    <!-- Menu za Juu -->
+    <div class="xanter-nav-tabs">
+        <button class="xanter-tab active">🏠 Home</button>
+        <button class="xanter-tab">🧭 Explore</button>
+        <button class="xanter-tab">🔥 Trending</button>
+        <button class="xanter-tab">👤 Artists</button>
+    </div>
+
+    <!-- Sanduku la Kutafutia Online (Linalofanya kazi na Jamendo API) -->
+    <div class="xanter-search-wrapper">
+        <div class="xanter-search-box">
+            <input type="text" id="searchInput" placeholder="Tafuta msanii, wimbo...">
+            <button id="searchBtn">🔍</button>
+        </div>
+    </div>
+
+    <!-- Bango la Kuvutia (Gradient Banner) -->
+    <div class="xanter-banner">
+        <h2>Discover & Enjoy Your Favorite Music</h2>
+        <p>Sikiliza nyimbo mpya, wasanii maarufu na muziki unaoupenda kila siku.</p>
+    </div>
+
+    <!-- Sehemu ya Kuonyesha Matokeo ya Nyimbo za Online -->
+    <div id="xanter-online-results"></div>
+
+    <!-- Player ya Chini kabisa (Bottom Player Bar) -->
+    <div class="xanter-player-bar">
+        <div class="player-left">
+            <div class="player-thumb" style="display: flex; align-items: center; justify-content: center; font-size: 20px;">🎤</div>
+            <div class="player-meta">
+                <strong id="currentSongTitle">Chagua Wimbo</strong>
+                <span>Xanter MP3</span>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button>🔀</button>
+            <button>⏮️</button>
+            <button class="play-main-btn" onclick="togglePlayPause()">▶</button>
+            <button>⏭️</button>
+            <button>🔁</button>
+        </div>
+    </div>
+
+    <!-- JavaScript ya Kuendesha API ya Kutafuta na Kudownload -->
+    <script>
+        let audioElement = null;
+
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            let keyword = document.getElementById('searchInput').value.trim();
+            if (keyword !== "") {
+                let resultsDiv = document.getElementById('xanter-online-results');
+                resultsDiv.innerHTML = "<p style='color: #9ca3af; text-align: center;'>Inatafuta nyimbo...</p>";
+
+                let url = `https://api.jamendo.com/v3.1/tracks/?client_id=5993df92&format=json&search=${encodeURIComponent(keyword)}&limit=10`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsDiv.innerHTML = "";
+                        if (data.results && data.results.length > 0) {
+                            data.results.forEach(track => {
+                                let item = document.createElement('div');
+                                item.className = "xanter-song-row";
+                                
+                                let cleanName = track.name.replace(/'/g, "").replace(/"/g, "");
+                                let cleanArtist = track.artist_name.replace(/'/g, "").replace(/"/g, "");
+
+                                item.innerHTML = `
+                                    <div class="song-info">
+                                        <strong>${cleanName}</strong>
+                                        <small>${cleanArtist}</small>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn-play" onclick="chezaWimbo('${track.audio}', '${cleanName}')">Cheza</button>
+                                        <button class="btn-dl" onclick="pakuaWimbo('${track.audio}', '${cleanName}')">Download</button>
+                                    </div>
+                                `;
+                                resultsDiv.appendChild(item);
+                            });
+                        } else {
+                            resultsDiv.innerHTML = "<p style='color: #9ca3af; text-align: center;'>Hakuna nyimbo zilizopatikana.</p>";
+                        }
+                    })
+                    .catch(err => {
+                        resultsDiv.innerHTML = "<p style='color: red; text-align: center;'>Imeshindikana kuunganisha na mtandao.</p>";
+                    });
+            } else {
+                alert("Tafadhali andika jina la wimbo au msanii!");
+            }
+        });
+
+        // Kazi ya kucheza wimbo na kuleta jina lake kwenye player ya chini
+        function chezaWimbo(audioUrl, songName) {
+            if (audioElement) {
+                audioElement.pause();
+            }
+            audioElement = new Audio(audioUrl);
+            audioElement.play();
+            
+            document.getElementById('currentSongTitle').innerText = songName;
+            alert("Inacheza: " + songName);
+        }
+
+        function togglePlayPause() {
+            if (audioElement) {
+                if (audioElement.paused) {
+                    audioElement.play();
+                } else {
+                    audioElement.pause();
+                }
+            } else {
+                alert("Tafadhali chagua wimbo kwanza!");
+            }
+        }
+
+        // Kazi ya kudownload wimbo
+        function pakuaWimbo(audioUrl, songName) {
+            let a = document.createElement('a');
+            a.href = audioUrl;
+            a.download = songName + ".mp3";
+            a.setAttribute('target', '_blank');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert("Inapakua wimbo: " + songName);
+        }
+    </script>
+</body>
+</html>
