@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xanter MP3 - Jamendo & Audius Edition</title>
+    
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #09090b;
+            --bg-card-hover: #18181b;
+            --accent-red: #dc2626;
+            --accent-red-glow: rgba(220, 38, 38, 0.3);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+
+        /* Compact Header */
+        header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-area i {
+            font-size: 20px;
+            color: var(--accent-red);
+            filter: drop-shadow(0 0 6px var(--accent-red-glow));
+        }
+
+        .logo-area h1 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-area h1 span {
+            color: var(--accent-red);
+            -webkit-text-fill-color: var(--accent-red);
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 12px 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Compact Search Bar (Placeholder tupu) */
+        .search-box {
+            background: #18181b;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-red);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-box i {
+            color: var(--accent-red);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .see-more {
+            font-size: 11px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .see-more:hover {
+            text-decoration: underline;
+        }
+
+        /* Compact Horizontal Scroll for Arts */
+        .scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 18px;
+            padding-bottom: 3px;
+            scrollbar-width: none;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-track {
+            display: flex;
+            gap: 10px;
+            width: max-content;
+        }
+
+        .circle-room {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .circle-room img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--border-color);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .circle-room:hover img {
+            transform: scale(1.05);
+            border-color: var(--text-muted);
+        }
+
+        .circle-room span {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 5px;
+            max-width: 55px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact Vertical List Style */
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .song-card {
+            background: transparent;
+            padding: 6px 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s ease;
+            border: none;
+        }
+
+        .song-card:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .song-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .song-thumb {
+            width: 38px;
+            height: 38px;
+            border-radius: 7px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .song-info {
+            overflow: hidden;
+        }
+
+        .song-info h4 {
+            font-size: 12px;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-info p {
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 8px var(--accent-red-glow);
+        }
+
+        .btn-download-icon {
+            color: var(--accent-red);
+            border-color: rgba(220, 38, 38, 0.3);
+            background: rgba(220, 38, 38, 0.06);
+        }
+
+        /* Persistent Bottom Audio Player Bar */
+        #audioPlayerBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #121214;
+            border-top: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+        }
+
+        .player-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        #playerThumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .player-meta h5 {
+            font-size: 11px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .player-meta p {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .player-controls button {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .player-controls button:hover {
+            color: var(--accent-red);
+        }
+
+        /* ========================================== */
+        /* COMPACT ARC MENU (CORNER)                  */
+        /* ========================================== */
+        .xanter-corner-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .xanter-menu-btn {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--accent-red), #7f1d1d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px var(--accent-red-glow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .xanter-corner-menu.active .xanter-menu-btn {
+            transform: rotate(135deg);
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+        }
+
+        .xanter-arc-items {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .arc-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #18181b;
+            color: var(--text-main);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            opacity: 0;
+            transform: scale(0) translate(0, 0);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .arc-link:hover {
+            background: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
+        }
+
+        .xanter-corner-menu.active .xanter-arc-items {
+            pointer-events: auto;
+        }
+
+        .xanter-corner-menu.active .arc-link:nth-child(1) { transform: translate(-105px, -3px) scale(1); opacity: 1; transition-delay: 0.05s; }
+        .xanter-corner-menu.active .arc-link:nth-child(2) { transform: translate(-98px, -48px) scale(1); opacity: 1; transition-delay: 0.10s; }
+        .xanter-corner-menu.active .arc-link:nth-child(3) { transform: translate(-75px, -90px) scale(1); opacity: 1; transition-delay: 0.15s; }
+        .xanter-corner-menu.active .arc-link:nth-child(4) { transform: translate(-35px, -105px) scale(1); opacity: 1; transition-delay: 0.20s; }
+        .xanter-corner-menu.active .arc-link:nth-child(5) { transform: translate(5px, -98px) scale(1); opacity: 1; transition-delay: 0.25s; }
+        .xanter-corner-menu.active .arc-link:nth-child(6) { transform: translate(25px, -52px) scale(1); opacity: 1; transition-delay: 0.30s; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-area">
+            <i class="fa-solid fa-compact-disc"></i>
+            <h1>XANTER<span>MP3</span></h1>
+        </div>
+        <i class="fa-solid fa-circle-user" style="font-size: 20px; color: var(--text-muted);"></i>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        
+        <!-- Search Bar (Placeholder tupu kabisa) -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="">
+            <i class="fa-solid fa-magnifying-glass" id="searchBtn"></i>
+        </div>
+
+        <!-- TRENDS SECTION (Audius / Jamendo Mix) -->
+        <div class="section-header">
+            <div class="section-title">Trends</div>
+            <a href="#" class="see-more">See All</a>
+        </div>
+        
+        <div class="song-list" id="trendsList">
+            <div class="song-card">
+                <div class="song-left">
+                    <div class="song-info">
+                        <h4>Inapakia nyimbo za Audius na Jamendo...</h4>
+                        <p>Tafadhali subiri</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARTS SECTION -->
+        <div class="section-header">
+            <div class="section-title">Arts</div>
+            <a href="#" class="see-more">See All</a>
+        </div>
+        <div class="scroll-wrapper">
+            <div class="scroll-track" id="artistsTrack">
+                <!-- Wasanii wataingizwa hapa -->
+            </div>
+        </div>
+
+        <!-- HOT SONGS SECTION -->
+        <div class="section-header">
+            <div class="section-title">Hot Songs</div>
+        </div>
+        
+        <div class="song-list" id="hotSongsList">
+            <!-- Nyimbo za moto zitaingizwa hapa -->
+        </div>
+
+    </div>
+
+    <!-- AUDIO PLAYER BAR YA CHINI -->
+    <div id="audioPlayerBar">
+        <div class="player-left">
+            <img src="" alt="" id="playerThumb">
+            <div class="player-meta">
+                <h5 id="playerTitle">Chagua Nyimbo</h5>
+                <p id="playerArtist">Xanter MP3</p>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button id="playPauseBtn"><i class="fa-solid fa-pause" id="playPauseIcon"></i></button>
+            <button id="closePlayerBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+    <audio id="mainAudioElement"></audio>
+
+    <!-- ARC MENU YA KONA -->
+    <div class="xanter-corner-menu" id="cornerMenu">
+        <div class="xanter-menu-btn" id="arcToggleBtn">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="xanter-arc-items">
+            <a href="#" class="arc-link">Explora</a>
+            <a href="#" class="arc-link">Trending</a>
+            <a href="#" class="arc-link">Artst</a>
+            <a href="#" class="arc-link">Album</a>
+            <a href="#" class="arc-link">Playlist</a>
+            <a href="#" class="arc-link">Download</a>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT & MULTI-API LOGIC (Jamendo + Audius) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Corner Menu Toggle Logic
+            const cornerMenu = document.getElementById('cornerMenu');
+            const arcToggleBtn = document.getElementById('arcToggleBtn');
+            const menuIcon = arcToggleBtn.querySelector('i');
+
+            arcToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                cornerMenu.classList.toggle('active');
+                if (cornerMenu.classList.contains('active')) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times');
+                } else {
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!cornerMenu.contains(e.target)) {
+                    cornerMenu.classList.remove('active');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            // Audio Player Elements
+            const audioElem = document.getElementById('mainAudioElement');
+            const playerBar = document.getElementById('audioPlayerBar');
+            const playerThumb = document.getElementById('playerThumb');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerArtist = document.getElementById('playerArtist');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const closePlayerBtn = document.getElementById('closePlayerBtn');
+
+            function playSong(url, title, artist, thumb) {
+                audioElem.src = url;
+                audioElem.play().catch(e => console.log("Auto-play blocked:", e));
+                playerThumb.src = thumb || 'https://picsum.photos/seed/music/100';
+                playerTitle.textContent = title;
+                playerArtist.textContent = artist;
+                playerBar.style.display = 'flex';
+                playPauseIcon.className = "fa-solid fa-pause";
+            }
+
+            playPauseBtn.addEventListener('click', () => {
+                if (audioElem.paused) {
+                    audioElem.play();
+                    playPauseIcon.className = "fa-solid fa-pause";
+                } else {
+                    audioElem.pause();
+                    playPauseIcon.className = "fa-solid fa-play";
+                }
+            });
+
+            closePlayerBtn.addEventListener('click', () => {
+                audioElem.pause();
+                playerBar.style.display = 'none';
+            });
+
+            // FETCH MUSIC FROM BOTH JAMENDO & AUDIUS APIS
+            async function fetchAllMusic() {
+                const trendsList = document.getElementById('trendsList');
+                const hotSongsList = document.getElementById('hotSongsList');
+                const artistsTrack = document.getElementById('artistsTrack');
+
+                let combinedTracks = [];
+
+                // 1. Vuta data kutoka Jamendo API
+                try {
+                    const jamendoRes = await fetch('https://api.jamendo.com/v3.0/tracks/?client_id=59929d2b&format=jsonflat&limit=6&imagesize=200');
+                    const jamendoData = await jamendoRes.json();
+                    if (jamendoData && jamendoData.results) {
+                        jamendoData.results.forEach(t => {
+                            combinedTracks.push({
+                                title: t.name,
+                                artist: t.artist_name,
+                                thumb: t.image || 'https://picsum.photos/seed/jamendo/100',
+                                audioUrl: t.audio,
+                                duration: `${Math.floor(t.duration / 60)}:${(t.duration % 60).toString().padStart(2, '0')}`
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.log("Hitilafu Jamendo:", e);
+                }
+
+                // 2. Vuta data kutoka Audius API (Trending Tracks)
+                try {
+                    const audiusRes = await fetch('https://api.audius.co/v1/tracks/trending?app_name=XanterMP3');
+                    const audiusData = await audiusRes.json();
+                    if (audiusData && audiusData.data) {
+                        audiusData.data.slice(0, 6).forEach(t => {
+                            let artworkUrl = t.artwork ? (t.artwork['150x150'] || 'https://picsum.photos/seed/audius/100') : 'https://picsum.photos/seed/audius/100';
+                            let streamUrl = `https://api.audius.co/v1/tracks/${t.id}/stream?app_name=XanterMP3`;
+                            combinedTracks.push({
+                                title: t.title,
+                                artist: t.user.name,
+                                thumb: artworkUrl,
+                                audioUrl: streamUrl,
+                                duration: `${Math.floor(t.duration / 60)}:${(t.duration % 60).toString().padStart(2, '0')}`
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.log("Hitilafu Audius:", e);
+                }
+
+                // Jaza kwenye HTML kama kuna nyimbo zilizopatikana
+                if (combinedTracks.length > 0) {
+                    trendsList.innerHTML = '';
+                    hotSongsList.innerHTML = '';
+                    artistsTrack.innerHTML = '';
+
+                    combinedTracks.forEach((track, index) => {
+                        const cardHTML = `
+                            <div class="song-card">
+                                <div class="song-left">
+                                    <img src="${track.thumb}" alt="Cover" class="song-thumb">
+                                    <div class="song-info">
+                                        <h4>${track.title}</h4>
+                                        <p>${track.artist} • ${track.duration}</p>
+                                    </div>
+                                </div>
+                                <div class="song-actions">
+                                    <button class="btn-action play-btn" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}"><i class="fa-solid fa-play"></i></button>
+                                    <a href="${track.audioUrl}" download="${track.title}.mp3" class="btn-action btn-download-icon" target="_blank"><i class="fa-solid fa-download"></i></a>
+                                </div>
+                            </div>
+                        `;
+
+                        if (index < 4) {
+                            trendsList.innerHTML += cardHTML;
+                        } else {
+                            hotSongsList.innerHTML += cardHTML;
+                        }
+
+                        if (index < 6) {
+                            artistsTrack.innerHTML += `
+                                <div class="circle-room">
+                                    <img src="${track.thumb}" alt="${track.artist}">
+                                    <span>${track.artist}</span>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    // Ambatisha utendaji wa kucheza kwa kila kitufe cha play
+                    document.querySelectorAll('.play-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const b = e.currentTarget;
+                            playSong(b.dataset.url, b.dataset.title, b.dataset.artist, b.dataset.thumb);
+                        });
+                    });
+                } else {
+                    trendsList.innerHTML = '<p style="font-size:11px; color:var(--text-muted); padding:10px;">Imeshindwa kupakia muziki. Angalia mtandao wako.</p>';
+                }
+            }
+
+            // Utafutaji kupitia Jamendo & Audius
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+
+            async function searchMusic(query) {
+                if (!query) return;
+                const trendsList = document.getElementById('trendsList');
+                trendsList.innerHTML = '<p style="font-size:11px; color:var(--text-muted); padding:10px;">Inatafuta...</p>';
+
+                try {
+                    const res = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=59929d2b&format=jsonflat&limit=8&search=${encodeURIComponent(query)}&imagesize=200`);
+                    const data = await res.json();
+
+                    if (data && data.results) {
+                        trendsList.innerHTML = '';
+                        data.results.forEach(track => {
+                            const title = track.name;
+                            const artist = track.artist_name;
+                            const thumb = track.image || 'https://picsum.photos/seed/search/100';
+                            const audioUrl = track.audio;
+
+                            trendsList.innerHTML += `
+                                <div class="song-card">
+                                    <div class="song-left">
+                                        <img src="${thumb}" alt="Cover" class="song-thumb">
+                                        <div class="song-info">
+                                            <h4>${title}</h4>
+                                            <p>${artist}</p>
+                                        </div>
+                                    </div>
+                                    <div class="song-actions">
+                                        <button class="btn-action play-btn" data-url="${audioUrl}" data-title="${title}" data-artist="${artist}" data-thumb="${thumb}"><i class="fa-solid fa-play"></i></button>
+                                        <a href="${audioUrl}" download="${title}.mp3" class="btn-action btn-download-icon" target="_blank"><i class="fa-solid fa-download"></i></a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        document.querySelectorAll('.play-btn').forEach(btn => {
+                            btn.addEventListener('click', (e) => {
+                                const b = e.currentTarget;
+                                playSong(b.dataset.url, b.dataset.title, b.dataset.artist, b.dataset.thumb);
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.error("Tatizo la utafutaji:", e);
+                }
+            }
+
+            searchBtn.addEventListener('click', () => searchMusic(searchInput.value));
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchMusic(searchInput.value);
+            });
+
+            // Anzisha upakuaji wa data pindi ukurasa unapofunguka
+            fetchAllMusic();
+        });
+    </script>
+</body>
+</html>
