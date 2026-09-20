@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xanter MP3 - Jamendo & Audius Edition</title>
+    <title>Xanter MP3 - Cloudinary Edition</title>
     
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,7 +34,6 @@
             justify-content: space-between;
             padding-bottom: 95px;
             overflow-x: hidden;
-            background-image: none;
         }
 
         header {
@@ -129,11 +128,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .search-box:focus-within {
-            border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
-        }
-
         .search-box input {
             background: transparent;
             border: none;
@@ -206,10 +200,6 @@
             font-weight: 600;
             background: none;
             border: none;
-        }
-
-        .see-all-btn:hover {
-            text-decoration: underline;
         }
 
         .artists-scroll-container {
@@ -413,11 +403,6 @@
             color: var(--text-main);
             font-size: 16px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .player-controls button:hover {
-            color: var(--accent-red);
         }
 
         #fullPlayerModal {
@@ -451,15 +436,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 16px;
-        }
-
-        .full-player-header h3 {
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-muted);
         }
 
         .full-player-artwork-container {
@@ -485,27 +461,16 @@
             margin-bottom: 15px;
         }
 
-        .full-player-info {
-            overflow: hidden;
-            flex: 1;
-        }
-
         .full-player-info h2 {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 4px;
             color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .full-player-info p {
             font-size: 13px;
             color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .btn-full-download {
@@ -518,17 +483,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
             cursor: pointer;
-            flex-shrink: 0;
-            transition: 0.3s;
             text-decoration: none;
-        }
-
-        .btn-full-download:hover {
-            background: var(--accent-red);
-            color: #fff;
-            box-shadow: 0 0 15px var(--accent-glow);
         }
 
         .progress-container {
@@ -542,7 +498,6 @@
             background: rgba(255,255,255,0.1);
             border-radius: 6px;
             cursor: pointer;
-            position: relative;
             margin-bottom: 8px;
             overflow: hidden;
         }
@@ -552,8 +507,6 @@
             background: var(--accent-red);
             border-radius: 6px;
             width: 0%;
-            position: relative;
-            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .time-info {
@@ -576,11 +529,6 @@
             color: var(--text-main);
             font-size: 20px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .full-player-controls button:hover {
-            color: var(--accent-red);
         }
 
         .btn-big-play {
@@ -593,16 +541,9 @@
             align-items: center;
             justify-content: center;
             font-size: 24px !important;
-            box-shadow: 0 8px 25px rgba(255,255,255,0.25);
-            transition: transform 0.2s !important;
         }
 
-        .btn-big-play:hover {
-            transform: scale(1.08);
-            color: var(--accent-red) !important;
-        }
-
-        /* MODAL YA POPUP */
+        /* POPUP MODAL */
         .custom-popup-modal {
             position: fixed;
             top: 0;
@@ -625,8 +566,6 @@
             max-width: 380px;
             padding: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .custom-popup-header {
@@ -667,7 +606,6 @@
             justify-content: space-between;
             align-items: center;
             color: var(--text-main);
-            cursor: pointer;
         }
 
         .upload-form-group {
@@ -726,7 +664,6 @@
     </header>
 
     <div class="main-container">
-        
         <div class="search-container">
             <div class="search-wrapper-inner">
                 <div class="search-box">
@@ -737,38 +674,29 @@
             </div>
         </div>
 
-        <!-- 1. LOCAL / UPLOADED SONGS SECTION (ITAJITOKEZA TU KUKIWA NA NYIMBO) -->
         <div id="localSectionWrapper" style="display: none;">
-            <div class="section-header">
-                <div class="section-title">My Uploaded Songs</div>
-            </div>
             <div class="song-list" id="localSongsList"></div>
         </div>
 
-        <!-- 2. TRENDS SECTION -->
         <div class="section-header">
             <div class="section-title">Trends</div>
             <button class="see-all-btn" id="seeAllTrends">See All</button>
         </div>
         <div class="song-list" id="trendsList"></div>
 
-        <!-- 3. ARTISTS SECTION -->
         <div class="section-header">
             <div class="section-title">Artists</div>
             <button class="see-all-btn" id="seeAllArtists">See All</button>
         </div>
         <div class="artists-scroll-container" id="artistsList"></div>
 
-        <!-- 4. HOT SONGS SECTION -->
         <div class="section-header">
             <div class="section-title">Hot Songs</div>
             <button class="see-all-btn" id="seeAllHot">See All</button>
         </div>
         <div class="song-list" id="hotSongsList"></div>
-
     </div>
 
-    <!-- Mini Audio Player Bar chini -->
     <div id="audioPlayerBar">
         <div class="player-left" id="openFullPlayerFromMini">
             <img src="" alt="" id="playerThumb">
@@ -783,7 +711,6 @@
         </div>
     </div>
 
-    <!-- FULL SCREEN PLAYER MODAL -->
     <div id="fullPlayerModal">
         <div class="full-player-header">
             <button id="closeFullPlayerBtn"><i class="fa-solid fa-chevron-down"></i></button>
@@ -824,7 +751,6 @@
         </div>
     </div>
 
-    <!-- GENERAL MODAL YA DIALOG -->
     <div id="genericPopupModal" class="custom-popup-modal">
         <div class="custom-popup-content">
             <div class="custom-popup-header">
@@ -838,16 +764,17 @@
     <audio id="mainAudioElement"></audio>
 
     <script>
+        // Cloudinary Configuration
+        const CLOUD_NAME = 'x17d7jsh'; 
+        const UPLOAD_PRESET = 'xanter_preset';
+
         document.databaseTracks = [];
 
         document.addEventListener("DOMContentLoaded", function () {
             let globalTracks = [];
-            let localUploadedTracks = JSON.parse(localStorage.getItem('xanter_custom_uploads')) || [];
+            let localUploadedTracks = JSON.parse(localStorage.getItem('xanter_cloud_uploads')) || [];
 
-            const suggestionDictionary = [
-                "Acoustic", "Bensound", "Pop Music", "Rock & Roll", "Piano Instrumentals", 
-                "Electronic", "Remix Beats", "Live Concert", "Chill Lofi", "Hip Hop Beats"
-            ];
+            const suggestionDictionary = ["Acoustic", "Bensound", "Pop Music", "Rock & Roll", "Piano Instrumentals", "Electronic", "Remix Beats"];
             
             const audioElem = document.getElementById('mainAudioElement');
             const playerBar = document.getElementById('audioPlayerBar');
@@ -890,60 +817,92 @@
                 fetchAllApis("hits");
             });
 
+            async function uploadToCloudinary(file, resourceType = 'auto') {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                let response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                let data = await response.json();
+                if (data.secure_url) {
+                    return data.secure_url;
+                } else {
+                    throw new Error(data.error?.message || 'Failed to upload file to Cloudinary.');
+                }
+            }
+
             function openUploadForm() {
-                popupTitle.textContent = "Upload Music & Cover";
+                popupTitle.textContent = "Upload Song to Cloud";
                 popupBodyContent.innerHTML = `
                     <div class="upload-form-group">
-                        <label>Jina la Msanii (Artist Name)</label>
-                        <input type="text" id="upArtist" placeholder="Andika jina la msanii...">
+                        <label>Artist Name</label>
+                        <input type="text" id="upArtist" placeholder="Enter artist name...">
                     </div>
                     <div class="upload-form-group">
-                        <label>Jina la Wimbo (Song Title)</label>
-                        <input type="text" id="upTitle" placeholder="Andika jina la wimbo...">
+                        <label>Song Title</label>
+                        <input type="text" id="upTitle" placeholder="Enter song title...">
                     </div>
                     <div class="upload-form-group">
-                        <label>Chagua Faili la Sauti (MP3)</label>
+                        <label>Select Audio File (MP3)</label>
                         <input type="file" id="upAudioFile" accept="audio/*">
                     </div>
                     <div class="upload-form-group">
-                        <label>Chagua Picha ya Jalada (Cover Photo)</label>
+                        <label>Select Cover Photo (Optional)</label>
                         <input type="file" id="upCoverFile" accept="image/*">
                     </div>
-                    <button class="btn-save-upload" id="submitUploadBtn">Hifadhi na Chapisha</button>
+                    <button class="btn-save-upload" id="submitUploadBtn">Upload and Save to Cloud</button>
+                    <div id="uploadProgressText" style="text-align: center; font-size: 11px; color: var(--accent-red); display: none; margin-top: 5px;">Uploading file, please wait...</div>
                 `;
                 genericPopupModal.style.display = 'flex';
 
-                document.getElementById('submitUploadBtn').addEventListener('click', function() {
+                document.getElementById('submitUploadBtn').addEventListener('click', async function() {
                     const artistVal = document.getElementById('upArtist').value.trim();
                     const titleVal = document.getElementById('upTitle').value.trim();
                     const audioInput = document.getElementById('upAudioFile');
                     const coverInput = document.getElementById('upCoverFile');
+                    const progressText = document.getElementById('uploadProgressText');
+                    const submitBtn = document.getElementById('submitUploadBtn');
 
                     if (!titleVal || audioInput.files.length === 0) {
-                        alert('Tafadhali jaza angalau jina la wimbo na uchague faili la sauti!');
+                        alert('Please enter a song title and select an MP3 audio file!');
                         return;
                     }
 
-                    const audioFile = audioInput.files[0];
-                    const coverFile = coverInput.files[0];
+                    progressText.style.display = 'block';
+                    submitBtn.disabled = true;
 
-                    const audioUrl = URL.createObjectURL(audioFile);
-                    const coverUrl = coverFile ? URL.createObjectURL(coverFile) : ('https://picsum.photos/seed/' + encodeURIComponent(titleVal) + '/300');
+                    try {
+                        const audioUrl = await uploadToCloudinary(audioInput.files[0], 'video');
 
-                    const newTrackObj = {
-                        title: titleVal,
-                        artist: artistVal || "Unknown Artist",
-                        thumb: coverUrl,
-                        audioUrl: audioUrl,
-                        duration: "3:30"
-                    };
+                        let coverUrl = 'https://picsum.photos/seed/' + encodeURIComponent(titleVal) + '/300';
+                        if (coverInput.files.length > 0) {
+                            coverUrl = await uploadToCloudinary(coverInput.files[0], 'image');
+                        }
 
-                    localUploadedTracks.unshift(newTrackObj);
-                    localStorage.setItem('xanter_custom_uploads', JSON.stringify(localUploadedTracks));
+                        const newTrackObj = {
+                            title: titleVal,
+                            artist: artistVal || "Xanter Artist",
+                            thumb: coverUrl,
+                            audioUrl: audioUrl,
+                            duration: "3:30"
+                        };
 
-                    alert('Wimbo umepakiwa kikamilifu!');
-                    closePopup();
-                    renderLocalUploads();
+                        localUploadedTracks.unshift(newTrackObj);
+                        localStorage.setItem('xanter_cloud_uploads', JSON.stringify(localUploadedTracks));
+
+                        alert('Song successfully uploaded!');
+                        closePopup();
+                        renderLocalUploads();
+                    } catch (error) {
+                        console.error(error);
+                        alert('An error occurred while uploading: ' + error.message);
+                    } finally {
+                        progressText.style.display = 'none';
+                        submitBtn.disabled = false;
+                    }
                 });
             }
 
@@ -956,7 +915,7 @@
                         <i class="fa-solid fa-circle-user" style="font-size: 45px; color: var(--accent-red);"></i>
                     </div>
                     <div class="popup-option-item"><span>Username</span> <b>Xanter User</b></div>
-                    <div class="popup-option-item"><span>Uploaded Tracks</span> <b>${localUploadedTracks.length} Songs</b></div>
+                    <div class="popup-option-item"><span>Cloud Uploads</span> <b>${localUploadedTracks.length} Songs</b></div>
                     <div class="popup-option-item"><span>Status</span> <span style="color: #22c55e;">Active</span></div>
                 `;
                 genericPopupModal.style.display = 'flex';
@@ -994,7 +953,7 @@
                             </div>
                             <div class="song-actions">
                                 <button class="btn-action play-btn" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}"><i class="fa-solid fa-play"></i></button>
-                                <button class="btn-action btn-download-icon" onclick="deleteLocalTrack(${index})" title="Futa Wimbo"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-action btn-download-icon" onclick="deleteLocalTrack(${index})" title="Delete Song"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     `;
@@ -1003,9 +962,9 @@
             }
 
             window.deleteLocalTrack = function(index) {
-                if (confirm("Je, una uhakika unataka kufuta wimbo huu?")) {
+                if (confirm("Are you sure you want to delete this song?")) {
                     localUploadedTracks.splice(index, 1);
-                    localStorage.setItem('xanter_custom_uploads', JSON.stringify(localUploadedTracks));
+                    localStorage.setItem('xanter_cloud_uploads', JSON.stringify(localUploadedTracks));
                     renderLocalUploads();
                 }
             };
@@ -1038,40 +997,17 @@
             }
 
             async function downloadSongFile(url, filename, buttonElement) {
-                let originalContent = "";
-                if (buttonElement) {
-                    originalContent = buttonElement.innerHTML;
-                    buttonElement.innerHTML = '<span style="font-size:9px;">...</span>';
-                    buttonElement.style.pointerEvents = 'none';
-                }
-
                 try {
-                    const safeFilename = filename.replace(/[/\\?%*:|"<>]/g, '_');
-                    if (url.startsWith('blob:')) {
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = safeFilename;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        if (buttonElement) { buttonElement.innerHTML = originalContent; buttonElement.style.pointerEvents = 'auto'; }
-                        return;
-                    }
-
                     const response = await fetch(url);
                     const blob = await response.blob();
                     const blobUrl = window.URL.createObjectURL(blob);
-                    
                     const a = document.createElement('a');
-                    a.style.display = 'none';
                     a.href = blobUrl;
-                    a.download = safeFilename;
+                    a.download = filename;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(blobUrl);
                     document.body.removeChild(a);
-
-                    if (buttonElement) { buttonElement.innerHTML = originalContent; buttonElement.style.pointerEvents = 'auto'; }
                 } catch (e) {
                     const a = document.createElement('a');
                     a.href = url;
@@ -1080,7 +1016,6 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    if (buttonElement) { buttonElement.innerHTML = originalContent; buttonElement.style.pointerEvents = 'auto'; }
                 }
             }
 
@@ -1228,8 +1163,7 @@
                 if (globalTracks.length === 0) {
                     globalTracks = [
                         { title: "Acoustic Breeze", artist: "Bensound", thumb: "https://picsum.photos/seed/breeze/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-1.mp3", duration: "6:12" },
-                        { title: "Creative Minds", artist: "Bensound Royalty", thumb: "https://picsum.photos/seed/minds/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-2.mp3", duration: "7:05" },
-                        { title: "Summer Memorable", artist: "Acoustic Indie", thumb: "https://picsum.photos/seed/summer/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-3.mp3", duration: "5:44" }
+                        { title: "Creative Minds", artist: "Bensound Royalty", thumb: "https://picsum.photos/seed/minds/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-2.mp3", duration: "7:05" }
                     ];
                 }
 
@@ -1292,7 +1226,7 @@
                         </div>
                         <div class="song-actions">
                             <button class="btn-action play-btn" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}"><i class="fa-solid fa-play"></i></button>
-                            <button class="btn-action btn-download-icon download-btn" onclick="downloadSongFile('${track.audioUrl}', '${track.title}.mp3', this)" title="Download"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-action btn-download-icon download-btn" onclick="downloadSongFile('${track.audioUrl}', '${track.title}.mp3')" title="Download"><i class="fa-solid fa-download"></i></button>
                         </div>
                     </div>
                 `;
