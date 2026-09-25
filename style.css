@@ -1,205 +1,72 @@
-/* --- MUONEKANO WA ASILI WA XANTER MP3 --- */
-body {
-    background-color: #0b0f19;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    padding-bottom: 100px; /* Nafasi ya player ya chini */
+/* --- MSIMBO KAMILI: Kidirisha, Email, na Kitufe cha Mshale wa Back --- */
+
+/* 1. Kupanua dirisha la profaili (Modal) lijae skrini vizuri */
+.custom-popup-modal {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  border-radius: 0 !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-/* Header */
-.xanter-header {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #fff;
-}
-.xanter-header span {
-    color: #ec4899; /* Rangi ya pinki kwenye MP3 */
-    margin-left: 5px;
+.custom-popup-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-/* Menu za Juu (Home, Explore, Trending) */
-.xanter-nav-tabs {
-    display: flex;
-    gap: 10px;
-    padding: 0 20px;
-    overflow-x: auto;
-    margin-bottom: 15px;
-}
-.xanter-tab {
-    background: #1e2230;
-    color: #cbd5e1;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-}
-.xanter-tab.active {
-    background: linear-gradient(135deg, #7c3aed, #db2777);
-    color: white;
+.custom-popup-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
 }
 
-/* Sanduku la Kutafutia (Search Box kama la picha) */
-.xanter-search-wrapper {
-    padding: 0 20px;
-    margin-bottom: 20px;
-}
-.xanter-search-box {
-    display: flex;
-    align-items: center;
-    background: #161b28;
-    border: 1px solid #2d3748;
-    border-radius: 30px;
-    padding: 10px 20px;
-}
-.xanter-search-box input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: white;
-    width: 100%;
-    font-size: 14px;
-}
-.xanter-search-box input::placeholder {
-    color: #718096;
-}
-.xanter-search-box button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #a0aec0;
-    font-size: 16px;
+/* 2. Kuzuia barua pepe isikatike na kuifanya isomeke yote */
+.custom-popup-body p,
+.profile-email, 
+.user-email, 
+.email-text {
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+  font-size: 13px !important;
+  max-width: 100% !important;
+  display: block !important;
+  line-height: 1.4 !important;
 }
 
-/* Bango lenye Rangi (Gradient Banner) */
-.xanter-banner {
-    margin: 0 20px 20px 20px;
-    background: linear-gradient(135deg, #3b82f6, #ec4899);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 25px rgba(236, 72, 153, 0.2);
-}
-.xanter-banner h2 {
-    margin: 0 0 10px 0;
-    font-size: 22px;
-}
-.xanter-banner p {
-    margin: 0;
-    font-size: 13px;
-    color: #f3f4f6;
-    line-height: 1.4;
+/* 3. Kitufe cha kamshale cha Back kwa ajili ya kurudi nyuma */
+.custom-popup-body button[onclick*="openProfileModal"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--accent-red, #ef4444) !important;
+  padding: 10px 16px !important;
+  border-radius: 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  margin-bottom: 15px !important;
+  text-align: left !important;
 }
 
-/* Orodha ya Matokeo ya Online Search */
-#xanter-online-results {
-    padding: 0 20px;
-}
-.xanter-song-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #161b28;
-    padding: 12px 15px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #1f293d;
-}
-.song-info strong {
-    font-size: 14px;
-    display: block;
-    color: #fff;
-}
-.song-info small {
-    color: #9ca3af;
-    font-size: 12px;
-}
-.btn-group {
-    display: flex;
-    gap: 6px;
-}
-.btn-play {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-}
-.btn-dl {
-    background: #10b981;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
+.custom-popup-body button[onclick*="openProfileModal"]::before {
+  content: "\f060"; /* Mshale wa FontAwesome (fa-arrow-left) */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 12px;
 }
 
-/* Player ya Chini (Bottom Player Bar) */
-.xanter-player-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #111827;
-    border-top: 1px solid #1f293d;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-}
-.player-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.player-thumb {
-    width: 45px;
-    height: 45px;
-    background: #374151;
-    border-radius: 8px;
-    object-fit: cover;
-}
-.player-meta strong {
-    font-size: 13px;
-    display: block;
-    color: #fff;
-}
-.player-meta span {
-    font-size: 11px;
-    color: #9ca3af;
-}
-.player-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-.player-controls button {
-    background: transparent;
-    border: none;
-    color: #d1d5db;
-    cursor: pointer;
-    font-size: 16px;
-}
-.player-controls .play-main-btn {
-    background: linear-gradient(135deg, #7c3aed, #db2777);
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+/* Kuficha maandishi ya zamani ya "Back to Profile" kama yalikuwa hayana mshale mzuri na kuacha ikoni */
+.custom-popup-body button[onclick*="openProfileModal"] i {
+  display: none !important; 
 }
