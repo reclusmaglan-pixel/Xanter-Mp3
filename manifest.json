@@ -14,5 +14,6 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "/index.html"
+  "id": "/index.html",
+  "orientation": "portrait"
 }
