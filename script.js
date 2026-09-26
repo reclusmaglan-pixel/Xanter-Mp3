@@ -1,98 +1,163 @@
 // ==========================================
-// XANTER MP3 - ROBUST INFINITE SCROLL & DYNAMIC TRENDS
+// XANTER MP3 - AUDIUS LIVE API + KIZA FALLBACK ONLY
 // ==========================================
 
-let page = 1;
-let loading = false;
+let audiusOffset = 0;
+let isFetchingLive = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     const trendsContainer = document.querySelector('.trends-section, #trends-container, .song-list'); 
+    const seeAllBtn = document.querySelector('.see-all-btn, #see-all');
     
     if (!trendsContainer) return;
 
-    // Safisha kwanza kisha uweke mzigo wa kwanza
+    // Safisha na anza kujaribu kupakia kupitia Audius API
     trendsContainer.innerHTML = '';
-    appendMoreSongs(trendsContainer, 4);
+    fetchLiveAudiusSongs(trendsContainer, 5);
 
-    // Sikiliza wakati mtumiaji anaposend/kuteremka chini (Infinite Scroll)
+    // Kitufe cha "See All"
+    if (seeAllBtn) {
+        seeAllBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetchLiveAudiusSongs(trendsContainer, 5);
+        });
+    }
+
+    // Mfumo wa Infinite Scroll (Ukisogea chini)
     window.addEventListener('scroll', () => {
         const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
         const currentScroll = window.scrollY;
 
-        // Kama mtumiaji amefika karibu na chini (pixel 50 za mwisho)
         if (currentScroll >= scrollableHeight - 50) {
-            if (!loading) {
-                loading = true;
-                
-                // Ongeza kiashiria cha kuloadi chini
-                let loader = document.getElementById('loader-indicator');
-                if (!loader) {
-                    loader = document.createElement('div');
-                    loader.id = 'loader-indicator';
-                    loader.style.cssText = "text-align: center; color: #888; padding: 15px; font-size: 13px;";
-                    loader.innerHTML = "Inaloadi nyimbo zaidi...";
-                    trendsContainer.appendChild(loader);
-                }
-
-                // Tumia muda mfupi kuiga mtandao kisha leta nyimbo mpya
-                setTimeout(() => {
-                    if (loader) loader.remove();
-                    appendMoreSongs(trendsContainer, 4);
-                    loading = false;
-                    page++;
-                }, 1000);
+            if (!isFetchingLive) {
+                fetchLiveAudiusSongs(trendsContainer, 5);
             }
         }
     });
 });
 
-// Orodha kubwa ya nyimbo zinazozunguka na kujizalisha zenyewe
-function appendMoreSongs(container, count) {
-    const songLibrary = [
-        { title: "Until It Hits", artist: "newkaib", duration: "3:05", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", source: "Jamendo" },
-        { title: "Travis Scott Best Mix", artist: "Rap Trap Radio", duration: "70:44", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", source: "Audius" },
-        { title: "Duck Hits The Gates", artist: "Carson's Workshop", duration: "1:10", image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", source: "Archive" },
-        { title: "Best Remixes Of Popular", artist: "Christopher Davies", duration: "51:54", image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", source: "Apple Music" },
-        { title: "Neon Cyber Vibe", artist: "Xanter Sound", duration: "3:40", image: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", source: "Jamendo" },
-        { title: "Acoustic Morning", artist: "Global Beats", duration: "2:55", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", source: "Audius" }
-    ];
+// Wimbo pekee wa akiba (Fallback) ukiwa na jina "Kiza" kama API ikigoma
+const fallbackSong = {
+    id: "kiza_fallback",
+    title: "Kiza",
+    artist: "Xanter Master",
+    duration: "3:30",
+    image: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=100",
+    audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    source: "Fallback (API Imegoma)"
+};
 
-    // Tunazungusha na kuchanganya kulingana na ukurasa ili zionekane mpya kila ukiteremka
-    for (let i = 0; i < count; i++) {
-        const randomIndex = Math.floor(Math.random() * songLibrary.length);
-        const song = songLibrary[randomIndex];
+// Kazi ya kupiga moja kwa moja kwenye Audius API
+async function fetchLiveAudiusSongs(container, limit) {
+    if (isFetchingLive) return;
+    isFetchingLive = true;
 
-        const songDiv = document.createElement('div');
-        songDiv.className = 'song-item';
-        songDiv.style.cssText = "display: flex; align-items: center; justify-content: space-between; background: #161616; margin-bottom: 10px; padding: 10px; border-radius: 12px;";
+    let loader = document.getElementById('live-api-loader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'live-api-loader';
+        loader.style.cssText = "text-align: center; color: #888; padding: 12px; font-size: 13px;";
+        loader.innerHTML = "Inatafuta nyimbo mpya mtandaoni kutoka Audius...";
+        container.appendChild(loader);
+    } else {
+        loader.style.display = 'block';
+    }
 
-        songDiv.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
-                <img src="${song.image}" alt="${song.title}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #333;">
-                <div style="overflow: hidden;">
-                    <h4 style="color: #fff; font-size: 14px; margin: 0 0 4px 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${song.title}</h4>
-                    <p style="color: #aaa; font-size: 12px; margin: 0 0 6px 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${song.artist} • ${song.duration}</p>
-                    <div style="display: flex; gap: 10px; font-size: 10px; color: #4CAF50; font-weight: bold;">
-                        <span>🎧 ${Math.floor(Math.random() * 15)} Plays</span>
-                        <span>📥 ${Math.floor(Math.random() * 5)} Downloads</span>
-                        <span style="color: #888;">[${song.source}]</span>
-                    </div>
+    try {
+        const liveApiUrl = `https://api.audius.co/v1/tracks/trending?app_name=XanterMP3&limit=${limit}&offset=${audiusOffset}`;
+        const response = await fetch(liveApiUrl);
+        
+        if (!response.ok) {
+            throw new Error("Audius API imegoma kujibu.");
+        }
+
+        const data = await response.json();
+        if (loader) loader.style.display = 'none';
+
+        if (data && data.data && data.data.length > 0) {
+            // API Imesoma vizuri! Tunaonyesha nyimbo za Audius
+            data.data.forEach(track => {
+                const title = track.title;
+                const artist = track.user.name;
+                const duration = formatDuration(track.duration);
+                const image = (track.artwork && track.artwork['480x480']) ? track.artwork['480x480'] : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100';
+                const audioUrl = `https://audius-metadata.cultur3stake.com/v1/tracks/${track.id}/stream`;
+                const plays = track.play_count || Math.floor(Math.random() * 50) + 10;
+
+                renderSongItem(container, title, artist, duration, image, audioUrl, plays, "Audius Live");
+            });
+
+            audiusOffset += limit;
+        } else {
+            // Kama hakuna data zilizorudi, onyesha wimbo wa Kiza
+            renderFallback(container);
+        }
+
+        isFetchingLive = false;
+
+    } catch (error) {
+        console.error("Hitilafu ya API:", error);
+        if (loader) loader.style.display = 'none';
+        
+        // API imeshindwa kusoma, tunaleta wimbo wa "Kiza"
+        renderFallback(container);
+        isFetchingLive = false;
+    }
+}
+
+function renderFallback(container) {
+    if (!document.getElementById(fallbackSong.id)) {
+        renderSongItem(
+            container, 
+            fallbackSong.title, 
+            fallbackSong.artist, 
+            fallbackSong.duration, 
+            fallbackSong.image, 
+            fallbackSong.audioUrl, 
+            15, 
+            fallbackSong.source, 
+            fallbackSong.id
+        );
+    }
+}
+
+function renderSongItem(container, title, artist, duration, image, audioUrl, plays, sourceTag, customId = '') {
+    const songDiv = document.createElement('div');
+    songDiv.className = 'song-item';
+    if (customId) songDiv.id = customId;
+    songDiv.style.cssText = "display: flex; align-items: center; justify-content: space-between; background: #161616; margin-bottom: 10px; padding: 10px; border-radius: 12px;";
+
+    songDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
+            <img src="${image}" alt="${title}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #333;">
+            <div style="overflow: hidden;">
+                <h4 style="color: #fff; font-size: 14px; margin: 0 0 4px 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${title}</h4>
+                <p style="color: #aaa; font-size: 12px; margin: 0 0 6px 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${artist} • ${duration}</p>
+                <div style="display: flex; gap: 10px; font-size: 10px; color: #4CAF50; font-weight: bold;">
+                    <span>🎧 ${plays} Plays</span>
+                    <span style="color: #00bcd4;">[${sourceTag}]</span>
                 </div>
             </div>
-            <div style="display: flex; gap: 8px;">
-                <button class="play-btn" style="background: #222; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Play">▶</button>
-                <button class="download-btn" style="background: #222; border: none; color: #ff4d4d; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Download">⬇</button>
-            </div>
-        `;
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="play-btn" style="background: #222; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Play">▶</button>
+            <button class="download-btn" style="background: #222; border: none; color: #ff4d4d; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Download">⬇</button>
+        </div>
+    `;
 
-        // Kitendo cha kubonyeza Play
-        const playBtn = songDiv.querySelector('.play-btn');
-        playBtn.addEventListener('click', () => {
-            const audio = new Audio(song.audioUrl);
-            audio.play().catch(e => console.log("Play error:", e));
-            alert(`Inacheza: ${song.title} - ${song.artist}`);
-        });
+    const playBtn = songDiv.querySelector('.play-btn');
+    playBtn.addEventListener('click', () => {
+        const audio = new Audio(audioUrl);
+        audio.play().catch(err => console.log("Play error:", err));
+        alert(`Inacheza: ${title} - ${artist}`);
+    });
 
-        container.appendChild(songDiv);
-    }
+    container.appendChild(songDiv);
+}
+
+function formatDuration(seconds) {
+    if (!seconds || isNaN(seconds)) return "3:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
