@@ -1,108 +1,1789 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xanter MP3</title>
-    <!-- FontAwesome kwa ajili ya icons -->
+    
+    <!-- Google Site Verification Tag -->
+    <meta name="google-site-verification" content="wM3uUHUQ_myYPjPokS_z_Ou2MVge08x1t_H1pbcy95A" />
+
+    <!-- Official Site Title for Google Results -->
+    <title>Xanter MP3 - Listen, Download & Upload Free Music Online</title>
+    
+    <!-- Meta Description for Search Engines -->
+    <meta name="description" content="Xanter MP3 is your ultimate online music platform. Stream trending songs, download free MP3 audio tracks, and upload your own music creations easily.">
+    
+    <!-- Keywords Related to Your Website -->
+    <meta name="keywords" content="Xanter MP3, online music platform, download MP3 songs, stream music, free audio streaming, upload music online">
+    
+    <!-- Basic Author and Robot Instructions -->
+    <meta name="author" content="Moses">
+    <meta name="robots" content="index, follow">
+
+    <!-- PWA Manifest & Theme Links -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Xanter MP3">
+
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        :root {
+            --bg-main: #000000;
+            --accent-red: #ef4444;
+            --accent-glow: rgba(239, 68, 68, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border-color: rgba(255, 255, 255, 0.04);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
+
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            justify-content: space-between;
+            padding-bottom: 95px;
+            overflow-x: hidden;
         }
-        .player-container {
-            background: #1e1e1e;
-            padding: 25px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-        }
-        .app-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #1db954;
-        }
-        .controls {
+
+        header {
+            padding: 12px 18px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
-            margin-top: 20px;
+            background: #000000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
         }
-        .btn {
-            background: #1db954;
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-area i {
+            font-size: 22px;
+            color: var(--accent-red);
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        .logo-area h1 {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-header:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 12px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .main-container {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-wrapper-inner {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box {
+            background: #000000;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-box i {
+            color: var(--accent-red);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: #000000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 12px 15px;
+            font-size: 12px;
+            color: var(--text-main);
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-top: 18px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .see-all-btn {
+            font-size: 12px;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-weight: 600;
+            background: none;
+            border: none;
+        }
+
+        .artists-scroll-container {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+
+        .artists-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .artist-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            width: 65px;
+        }
+
+        .artist-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            padding: 2px;
+            background: #000000;
+            transition: 0.3s;
+        }
+
+        .artist-item:hover .artist-avatar {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 12px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .artist-name {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .song-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .song-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .song-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .song-thumb {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .song-info {
+            overflow: hidden;
+        }
+
+        .song-info h4 {
+            font-size: 13px;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-muted);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-red);
+            color: #fff;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .btn-download-icon {
+            color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .social-metrics-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .metric-pill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+        }
+
+        .metric-pill i {
+            font-size: 10px;
+        }
+
+        #audioPlayerBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000000;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 18px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+        }
+
+        .player-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        #playerThumb {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .player-meta h5 {
+            font-size: 12px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+            font-weight: 600;
+        }
+
+        .player-meta p {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-controls button {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #fullPlayerModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+        }
+
+        .full-player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .full-player-header button {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .full-player-artwork-container {
+            width: 100%;
             display: flex;
             justify-content: center;
-            align-items: center;
-            transition: background 0.3s;
+            margin: 10px 0;
         }
-        .btn:hover {
-            background: #1aa34a;
+
+        .full-player-artwork {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1/1;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(239, 68, 68, 0.15);
+        }
+
+        .full-player-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .full-player-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .full-player-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .btn-full-download {
+            background: rgba(239, 68, 68, 0.15);
+            border: none;
+            color: var(--accent-red);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-red);
+            border-radius: 6px;
+            width: 0%;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .full-player-controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .full-player-controls button {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn-big-play {
+            width: 65px;
+            height: 65px;
+            background: var(--text-main) !important;
+            color: #000 !important;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px !important;
+        }
+
+        .custom-popup-modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            background: #000000 !important;
+            z-index: 3000 !important;
+            display: none;
+            flex-direction: column;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            overflow-y: auto !important;
+        }
+
+        .custom-popup-content {
+            background: #000000 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: 1 !important;
+            margin: 0 auto !important;
+            padding: 10px 0 !important;
+            box-shadow: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            box-sizing: border-box !important;
+        }
+
+        .custom-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .custom-popup-header h3 {
+            font-size: 17px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .custom-popup-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .custom-popup-body {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1 !important;
+            width: 100% !important;
+            overflow-y: auto !important;
+        }
+
+        .profile-email, 
+        .user-email, 
+        .email-text {
+            word-break: break-all !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+            font-size: 13px !important;
+            display: block !important;
+        }
+
+        .popup-option-item {
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .popup-option-item:hover {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--accent-red);
+        }
+
+        .upload-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .upload-form-group label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .upload-form-group input[type="text"],
+        .upload-form-group input[type="email"],
+        .upload-form-group input[type="password"],
+        .upload-form-group textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .upload-form-group input[type="file"] {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .btn-save-upload {
+            background: var(--accent-red);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .auth-switch-text {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 10px;
+            color: var(--text-muted);
+        }
+
+        .auth-switch-text span {
+            color: var(--accent-red);
+            cursor: pointer;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="player-container">
-        <h1 class="app-title"><i class="fa-solid fa-music"></i> Xanter MP3</h1>
-        <p>Kicheza Muziki Chako</p>
-        
-        <div class="controls">
-            <button class="btn" id="prevBtn"><i class="fa-solid fa-backward"></i></button>
-            <button class="btn" id="playBtn"><i class="fa-solid fa-play"></i></button>
-            <button class="btn" id="nextBtn"><i class="fa-solid fa-forward"></i></button>
+    <header>
+        <div class="logo-area">
+            <i class="fa-solid fa-compact-disc"></i>
+            <h1>XANTER MP3</h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn-header" id="homeBtn" title="Home"><i class="fa-solid fa-house"></i></button>
+            <button class="btn-header" id="uploadModalBtn" title="Upload Music"><i class="fa-solid fa-cloud-arrow-up"></i></button>
+            <button class="btn-header" id="profileBtn" title="Profile & Account"><i class="fa-solid fa-user"></i></button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="search-container">
+            <div class="search-wrapper-inner">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search song or artist..." autocomplete="off">
+                    <i class="fa-solid fa-magnifying-glass" id="searchBtn"></i>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="localSectionWrapper" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">My Uploaded Songs</div>
+            </div>
+            <div class="song-list" id="localSongsList"></div>
+        </div>
+
+        <div class="section-header">
+            <div class="section-title">Trends</div>
+            <button class="see-all-btn" id="seeAllTrends">See All</button>
+        </div>
+        <div class="song-list" id="trendsList"></div>
+
+        <div class="section-header">
+            <div class="section-title">Artists</div>
+            <button class="see-all-btn" id="seeAllArtists">See All</button>
+        </div>
+        <div class="artists-scroll-container" id="artistsList"></div>
+
+        <div class="section-header">
+            <div class="section-title">Hot Songs</div>
+            <button class="see-all-btn" id="seeAllHot">See All</button>
+        </div>
+        <div class="song-list" id="hotSongsList"></div>
+    </div>
+
+    <div id="audioPlayerBar">
+        <div class="player-left" id="openFullPlayerFromMini">
+            <img src="" alt="" id="playerThumb">
+            <div class="player-meta">
+                <h5 id="playerTitle">Select a Song</h5>
+                <p id="playerArtist">Xanter MP3</p>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button id="playPauseBtn"><i class="fa-solid fa-pause" id="playPauseIcon"></i></button>
+            <button id="closePlayerBtn" title="Close"><i class="fa-solid fa-xmark"></i></button>
         </div>
     </div>
 
-    <!-- Script ya kusajili Service Worker ili iweze kufanya kazi Offline na PWA -->
+    <div id="fullPlayerModal">
+        <div class="full-player-header">
+            <button id="closeFullPlayerBtn"><i class="fa-solid fa-chevron-down"></i></button>
+            <h3>Now Playing</h3>
+            <button style="opacity: 0; pointer-events: none;"></button>
+        </div>
+
+        <div class="full-player-artwork-container">
+            <img src="" alt="Artwork" class="full-player-artwork" id="fullModalThumb">
+        </div>
+
+        <div class="full-player-info-row">
+            <div class="full-player-info">
+                <h2 id="fullModalTitle">Song Title</h2>
+                <p id="fullModalArtist">Artist Name</p>
+            </div>
+            <button id="fullModalDownloadBtn" class="btn-full-download" title="Download Song">
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar-wrapper" id="progressBarWrapper">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTimeText">0:00</span>
+                <span id="durationText">0:00</span>
+            </div>
+        </div>
+
+        <div class="full-player-controls">
+            <button><i class="fa-solid fa-shuffle"></i></button>
+            <button id="modalPrevBtn"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="btn-big-play" id="modalPlayPauseBtn"><i class="fa-solid fa-pause" id="modalPlayPauseIcon"></i></button>
+            <button id="modalNextBtn"><i class="fa-solid fa-forward-step"></i></button>
+            <button><i class="fa-solid fa-repeat"></i></button>
+        </div>
+    </div>
+
+    <div id="genericPopupModal" class="custom-popup-modal">
+        <div class="custom-popup-content">
+            <div class="custom-popup-header">
+                <h3 id="popupTitle">Modal Title</h3>
+                <button class="custom-popup-close" id="closePopupBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="custom-popup-body" id="popupBodyContent"></div>
+        </div>
+    </div>
+
+    <audio id="mainAudioElement"></audio>
+
+    <script>
+        const CLOUD_NAME = 'x17d7jsh'; 
+        const UPLOAD_PRESET = 'xanter_preset';
+
+        document.databaseTracks = [];
+
+        function badilishaEmailKuwaJina(email) {
+            if (!email) return 'User';
+            let sehemuYaJina = email.split('@')[0];
+            sehemuYaJina = sehemuYaJina.replace(/[0-9_.]/g, ' ').trim();
+            return sehemuYaJina.charAt(0).toUpperCase() + sehemuYaJina.slice(1);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let globalTracks = [];
+            let localUploadedTracks = JSON.parse(localStorage.getItem('xanter_cloud_uploads')) || [];
+
+            let usersList = JSON.parse(localStorage.getItem('xanter_users')) || [];
+            let currentUser = JSON.parse(localStorage.getItem('xanter_current_user')) || null;
+            let userDownloads = JSON.parse(localStorage.getItem('xanter_downloads')) || [];
+            let userPlaylists = JSON.parse(localStorage.getItem('xanter_playlists')) || [];
+            
+            let songMetrics = JSON.parse(localStorage.getItem('xanter_metrics')) || {};
+
+            const audioElem = document.getElementById('mainAudioElement');
+            const playerBar = document.getElementById('audioPlayerBar');
+            const playerThumb = document.getElementById('playerThumb');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerArtist = document.getElementById('playerArtist');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const closePlayerBtn = document.getElementById('closePlayerBtn');
+            
+            const fullPlayerModal = document.getElementById('fullPlayerModal');
+            const closeFullPlayerBtn = document.getElementById('closeFullPlayerBtn');
+            const openFullPlayerFromMini = document.getElementById('openFullPlayerFromMini');
+            const fullModalThumb = document.getElementById('fullModalThumb');
+            const fullModalTitle = document.getElementById('fullModalTitle');
+            const fullModalArtist = document.getElementById('fullModalArtist');
+            const fullModalDownloadBtn = document.getElementById('fullModalDownloadBtn');
+            const modalPlayPauseBtn = document.getElementById('modalPlayPauseBtn');
+            const modalPlayPauseIcon = document.getElementById('modalPlayPauseIcon');
+            const progressBarWrapper = document.getElementById('progressBarWrapper');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const currentTimeText = document.getElementById('currentTimeText');
+            const durationText = document.getElementById('durationText');
+
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const searchSuggestions = document.getElementById('searchSuggestions');
+            
+            const homeBtn = document.getElementById('homeBtn');
+            const uploadModalBtn = document.getElementById('uploadModalBtn');
+            const profileBtn = document.getElementById('profileBtn');
+
+            const genericPopupModal = document.getElementById('genericPopupModal');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupBodyContent = document.getElementById('popupBodyContent');
+            const closePopupBtn = document.getElementById('closePopupBtn');
+
+            homeBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                window.fetchAllApis("hits");
+            });
+
+            async function uploadToCloudinary(file, resourceType = 'auto') {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                let response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                let data = await response.json();
+                if (data.secure_url) {
+                    return data.secure_url;
+                } else {
+                    throw new Error(data.error?.message || 'Failed to upload file to Cloudinary.');
+                }
+            }
+
+            function openUploadForm() {
+                if (!currentUser) {
+                    alert('Please login or signup first to upload music!');
+                    openLoginModal();
+                    return;
+                }
+
+                popupTitle.textContent = "Upload Song to Cloud";
+                popupBodyContent.innerHTML = `
+                    <div class="upload-form-group">
+                        <label>Artist Name</label>
+                        <input type="text" id="upArtist" placeholder="Enter artist name...">
+                    </div>
+                    <div class="upload-form-group">
+                        <label>Song Title</label>
+                        <input type="text" id="upTitle" placeholder="Enter song title...">
+                    </div>
+                    <div class="upload-form-group">
+                        <label>Select Audio File (MP3)</label>
+                        <input type="file" id="upAudioFile" accept="audio/*">
+                    </div>
+                    <div class="upload-form-group">
+                        <label>Select Cover Photo (Optional)</label>
+                        <input type="file" id="upCoverFile" accept="image/*">
+                    </div>
+                    <button class="btn-save-upload" id="submitUploadBtn">Upload and Save to Cloud</button>
+                    <div id="uploadProgressText" style="text-align: center; font-size: 11px; color: var(--accent-red); display: none; margin-top: 5px;">Uploading file, please wait...</div>
+                `;
+                genericPopupModal.style.display = 'flex';
+
+                document.getElementById('submitUploadBtn').addEventListener('click', async function() {
+                    const artistVal = document.getElementById('upArtist').value.trim();
+                    const titleVal = document.getElementById('upTitle').value.trim();
+                    const audioInput = document.getElementById('upAudioFile');
+                    const coverInput = document.getElementById('upCoverFile');
+                    const progressText = document.getElementById('uploadProgressText');
+                    const submitBtn = document.getElementById('submitUploadBtn');
+
+                    if (!titleVal || audioInput.files.length === 0) {
+                        alert('Please enter a song title and select an MP3 audio file!');
+                        return;
+                    }
+
+                    progressText.style.display = 'block';
+                    submitBtn.disabled = true;
+
+                    try {
+                        const audioUrl = await uploadToCloudinary(audioInput.files[0], 'video');
+
+                        let coverUrl = 'https://picsum.photos/seed/' + encodeURIComponent(titleVal) + '/300';
+                        if (coverInput.files.length > 0) {
+                            coverUrl = await uploadToCloudinary(coverInput.files[0], 'image');
+                        }
+
+                        const songId = 'song_' + Date.now();
+                        const newTrackObj = {
+                            id: songId,
+                            title: titleVal,
+                            artist: artistVal || badilishaEmailKuwaJina(currentUser.email),
+                            thumb: coverUrl,
+                            audioUrl: audioUrl,
+                            duration: "3:30",
+                            uploaderEmail: currentUser.email
+                        };
+
+                        localUploadedTracks.unshift(newTrackObj);
+                        localStorage.setItem('xanter_cloud_uploads', JSON.stringify(localUploadedTracks));
+
+                        alert('Song successfully uploaded!');
+                        closePopup();
+                        renderLocalUploads();
+                    } catch (error) {
+                        console.error(error);
+                        alert('An error occurred while uploading: ' + error.message);
+                    } finally {
+                        progressText.style.display = 'none';
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            uploadModalBtn.addEventListener('click', openUploadForm);
+
+            function openLoginModal() {
+                popupTitle.textContent = "Login to Your Account";
+                popupBodyContent.innerHTML = `
+                    <div class="upload-form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email...">
+                    </div>
+                    <div class="upload-form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password...">
+                    </div>
+                    <button class="btn-save-upload" id="submitLoginBtn">Login</button>
+                    <div class="auth-switch-text">Don't have an account? <span id="switchToSignup">Sign Up</span></div>
+                `;
+                genericPopupModal.style.display = 'flex';
+
+                document.getElementById('submitLoginBtn').addEventListener('click', () => {
+                    const emailVal = document.getElementById('loginEmail').value.trim().toLowerCase();
+                    const passVal = document.getElementById('loginPassword').value.trim();
+
+                    const found = usersList.find(x => x.email === emailVal && x.password === passVal);
+                    if (found) {
+                        currentUser = found;
+                        localStorage.setItem('xanter_current_user', JSON.stringify(currentUser));
+                        alert('Login successful!');
+                        closePopup();
+                        openProfileModal();
+                    } else {
+                        alert('Invalid email or password!');
+                    }
+                });
+
+                document.getElementById('switchToSignup').addEventListener('click', () => {
+                    openSignupModal();
+                });
+            }
+
+            function openSignupModal() {
+                popupTitle.textContent = "Create an Account (Sign Up)";
+                popupBodyContent.innerHTML = `
+                    <div class="upload-form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email...">
+                    </div>
+                    <div class="upload-form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="Choose a password...">
+                    </div>
+                    <button class="btn-save-upload" id="submitSignupBtn">Sign Up</button>
+                    <div class="auth-switch-text">Already have an account? <span id="switchToLogin">Login</span></div>
+                `;
+                genericPopupModal.style.display = 'flex';
+
+                document.getElementById('submitSignupBtn').addEventListener('click', () => {
+                    const emailVal = document.getElementById('signupEmail').value.trim().toLowerCase();
+                    const passVal = document.getElementById('signupPassword').value.trim();
+
+                    if (!emailVal || !passVal) {
+                        alert('Please fill in all fields!');
+                        return;
+                    }
+
+                    if (!emailVal.includes('@') || !emailVal.includes('.')) {
+                        alert('Please enter a valid email address!');
+                        return;
+                    }
+
+                    if (usersList.some(x => x.email === emailVal)) {
+                        alert('This email is already registered! Please login.');
+                        return;
+                    }
+
+                    const newUser = { email: emailVal, password: passVal };
+                    usersList.push(newUser);
+                    localStorage.setItem('xanter_users', JSON.stringify(usersList));
+
+                    currentUser = newUser;
+                    localStorage.setItem('xanter_current_user', JSON.stringify(currentUser));
+
+                    alert('Account created and logged in successfully!');
+                    closePopup();
+                    openProfileModal();
+                });
+
+                document.getElementById('switchToLogin').addEventListener('click', () => {
+                    openLoginModal();
+                });
+            }
+
+            function openProfileModal() {
+                if (!currentUser) {
+                    openLoginModal();
+                    return;
+                }
+
+                const jinaLaMtumiajiPekee = badilishaEmailKuwaJina(currentUser.email);
+
+                popupTitle.textContent = "My Profile";
+                popupBodyContent.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 5px;">
+                        <i class="fa-solid fa-circle-user" style="font-size: 42px; color: var(--accent-red);"></i>
+                        <div style="overflow: hidden;">
+                            <h4 style="font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700;">${jinaLaMtumiajiPekee}</h4>
+                            <p class="email-text" style="font-size: 11px; color: var(--text-muted);">${currentUser.email}</p>
+                        </div>
+                    </div>
+
+                    <div class="popup-option-item" onclick="openSubSectionList('downloads')">
+                        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-download" style="color: #f59e0b; font-size: 16px;"></i> Downloads</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </div>
+
+                    <div class="popup-option-item" onclick="openSubSectionList('playlists')">
+                        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-list-ul" style="color: #3b82f6; font-size: 16px;"></i> Playlists</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </div>
+
+                    <div class="popup-option-item" onclick="openSubSectionList('uploads')">
+                        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-cloud-arrow-up" style="color: #10b981; font-size: 16px;"></i> Uploads</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </div>
+
+                    <button class="btn-save-upload" id="logoutBtn" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-color); margin-top: 15px;">Logout</button>
+                `;
+                genericPopupModal.style.display = 'flex';
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    currentUser = null;
+                    localStorage.removeItem('xanter_current_user');
+                    alert('Logged out successfully!');
+                    closePopup();
+                });
+            }
+
+            window.openSubSectionList = function(type) {
+                let title = "";
+                let data = [];
+
+                if (type === 'downloads') {
+                    title = "My Downloads";
+                    data = userDownloads.filter(t => t.userEmail === currentUser.email);
+                } else if (type === 'playlists') {
+                    title = "My Playlists";
+                    data = userPlaylists.filter(t => t.userEmail === currentUser.email);
+                } else if (type === 'uploads') {
+                    title = "My Uploads";
+                    data = localUploadedTracks.filter(t => t.uploaderEmail === currentUser.email);
+                }
+
+                popupTitle.textContent = title;
+                popupBodyContent.innerHTML = `
+                    <button onclick="openProfileModal()" class="back-btn" style="background:none; border:none; color:var(--accent-red); font-size:13px; cursor:pointer; margin-bottom:12px; text-align:left; display:inline-flex; align-items:center; gap:8px; font-weight:600;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Profile
+                    </button>
+                    <div class="song-list" style="max-height: 65vh; overflow-y: auto;">
+                        ${data.length === 0 ? '<div style="text-align:center; color:var(--text-muted); padding:30px;">No records found here yet.</div>' : 
+                        data.map(t => {
+                            const trackKey = t.id || t.audioUrl;
+                            const metric = songMetrics[trackKey] || { plays: 0, downloads: 0 };
+                            return `
+                                <div class="song-card">
+                                    <div class="song-main-row">
+                                        <div class="song-left" onclick="playSong('${t.audioUrl}', '${t.title}', '${t.artist}', '${t.thumb}'); closePopup();">
+                                            <img src="${t.thumb}" class="song-thumb">
+                                            <div class="song-info">
+                                                <h4>${t.title}</h4>
+                                                <p>${t.artist}</p>
+                                            </div>
+                                        </div>
+                                        ${type === 'uploads' ? `<button class="btn-action btn-download-icon" onclick="deleteLocalTrackById('${t.id}')" title="Delete Song"><i class="fa-solid fa-trash"></i></button>` : ''}
+                                    </div>
+                                    <div class="social-metrics-bar">
+                                        <div class="metric-pill">
+                                            <i class="fa-solid fa-headphones" style="color: var(--accent-red);"></i> <span id="plays-${trackKey}">${metric.plays}</span> Plays
+                                        </div>
+                                        <div class="metric-pill">
+                                            <i class="fa-solid fa-download" style="color: #3b82f6;"></i> <span id="downloads-${trackKey}">${metric.downloads}</span> Downloads
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            };
+
+            profileBtn.addEventListener('click', () => {
+                if (currentUser) {
+                    openProfileModal();
+                } else {
+                    openLoginModal();
+                }
+            });
+
+            window.closePopup = function() {
+                genericPopupModal.style.display = 'none';
+            };
+
+            closePopupBtn.addEventListener('click', closePopup);
+
+            function incrementMetric(trackKey, type) {
+                if (!songMetrics[trackKey]) {
+                    songMetrics[trackKey] = { plays: 0, downloads: 0 };
+                }
+                songMetrics[trackKey][type] += 1;
+                localStorage.setItem('xanter_metrics', JSON.stringify(songMetrics));
+
+                const spanElem = document.getElementById(`${type}-${trackKey}`);
+                if (spanElem) {
+                    spanElem.textContent = songMetrics[trackKey][type];
+                }
+            }
+
+            function renderLocalUploads() {
+                const localWrapper = document.getElementById('localSectionWrapper');
+                const localListContainer = document.getElementById('localSongsList');
+                localListContainer.innerHTML = '';
+
+                if (localUploadedTracks.length === 0) {
+                    localWrapper.style.display = 'none';
+                    return;
+                }
+
+                localWrapper.style.display = 'block';
+                localUploadedTracks.forEach((track) => {
+                    const trackKey = track.id || track.audioUrl;
+                    const metric = songMetrics[trackKey] || { plays: 0, downloads: 0 };
+
+                    localListContainer.innerHTML += `
+                        <div class="song-card">
+                            <div class="song-main-row">
+                                <div class="song-left open-full-player-trigger" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}" data-key="${trackKey}">
+                                    <img src="${track.thumb}" class="song-thumb">
+                                    <div class="song-info">
+                                        <h4>${track.title}</h4>
+                                        <p>${track.artist} • ${track.duration}</p>
+                                    </div>
+                                </div>
+                                <div class="song-actions">
+                                    <button class="btn-action play-btn" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}" data-key="${trackKey}"><i class="fa-solid fa-play"></i></button>
+                                    <button class="btn-action btn-download-icon" onclick="deleteLocalTrackById('${track.id}')" title="Delete Song"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="social-metrics-bar">
+                                <div class="metric-pill">
+                                    <i class="fa-solid fa-headphones" style="color: var(--accent-red);"></i> <span id="plays-${trackKey}">${metric.plays}</span> Plays
+                                </div>
+                                <div class="metric-pill">
+                                    <i class="fa-solid fa-download" style="color: #3b82f6;"></i> <span id="downloads-${trackKey}">${metric.downloads}</span> Downloads
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                bindPlayerEvents();
+            }
+
+            window.deleteLocalTrackById = function(id) {
+                if (confirm("Are you sure you want to delete this song?")) {
+                    localUploadedTracks = localUploadedTracks.filter(t => t.id !== id);
+                    localStorage.setItem('xanter_cloud_uploads', JSON.stringify(localUploadedTracks));
+                    renderLocalUploads();
+                }
+            };
+
+            let currentPlayingUrl = "";
+            let currentTrackData = null;
+            let currentTrackKey = "";
+
+            function playSong(url, title, artist, thumb, trackKey = "") {
+                currentTrackData = { url, title, artist, thumb };
+                currentTrackKey = trackKey || url;
+
+                if (currentPlayingUrl === url) {
+                    if (audioElem.paused) { audioElem.play(); updatePlayState(true); }
+                    else { audioElem.pause(); updatePlayState(false); }
+                } else {
+                    currentPlayingUrl = url;
+                    audioElem.src = url;
+                    audioElem.play().catch(e => console.log(e));
+                    
+                    const imgUrl = thumb || 'https://picsum.photos/seed/music/300';
+                    playerThumb.src = imgUrl;
+                    playerTitle.textContent = title;
+                    playerArtist.textContent = artist;
+                    
+                    fullModalThumb.src = imgUrl;
+                    fullModalTitle.textContent = title;
+                    fullModalArtist.textContent = artist;
+
+                    playerBar.style.display = 'flex';
+                    updatePlayState(true);
+
+                    incrementMetric(currentTrackKey, 'plays');
+                }
+            }
+
+            window.playSong = playSong;
+
+            async function downloadSongFile(url, filename, buttonElement, trackInfo = null, trackKey = "") {
+                const key = trackKey || url;
+                incrementMetric(key, 'downloads');
+
+                try {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(blobUrl);
+                    document.body.removeChild(a);
+
+                    if (currentUser && trackInfo) {
+                        if (!userDownloads.some(d => d.audioUrl === trackInfo.audioUrl && d.userEmail === currentUser.email)) {
+                            userDownloads.push({ ...trackInfo, userEmail: currentUser.email });
+                            localStorage.setItem('xanter_downloads', JSON.stringify(userDownloads));
+                        }
+                    }
+                } catch (e) {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    if (currentUser && trackInfo) {
+                        if (!userDownloads.some(d => d.audioUrl === trackInfo.audioUrl && d.userEmail === currentUser.email)) {
+                            userDownloads.push({ ...trackInfo, userEmail: currentUser.email });
+                            localStorage.setItem('xanter_downloads', JSON.stringify(userDownloads));
+                        }
+                    }
+                }
+            }
+
+            fullModalDownloadBtn.addEventListener('click', (e) => {
+                if (currentTrackData) {
+                    downloadSongFile(currentTrackData.url, `${currentTrackData.title}.mp3`, e.currentTarget, currentTrackData, currentTrackKey);
+                }
+            });
+
+            function updatePlayState(isPlaying) {
+                if (isPlaying) {
+                    playPauseIcon.className = "fa-solid fa-pause";
+                    modalPlayPauseIcon.className = "fa-solid fa-pause";
+                } else {
+                    playPauseIcon.className = "fa-solid fa-play";
+                    modalPlayPauseIcon.className = "fa-solid fa-play";
+                }
+            }
+
+            playPauseBtn.addEventListener('click', () => {
+                if (audioElem.paused) { audioElem.play(); updatePlayState(true); }
+                else { audioElem.pause(); updatePlayState(false); }
+            });
+
+            modalPlayPauseBtn.addEventListener('click', () => {
+                if (audioElem.paused) { audioElem.play(); updatePlayState(true); }
+                else { audioElem.pause(); updatePlayState(false); }
+            });
+
+            closePlayerBtn.addEventListener('click', () => {
+                audioElem.pause();
+                currentPlayingUrl = "";
+                playerBar.style.display = 'none';
+                fullPlayerModal.style.display = 'none';
+            });
+
+            openFullPlayerFromMini.addEventListener('click', () => {
+                fullPlayerModal.style.display = 'flex';
+            });
+
+            closeFullPlayerBtn.addEventListener('click', () => {
+                fullPlayerModal.style.display = 'none';
+            });
+
+            audioElem.addEventListener('timeupdate', () => {
+                if (audioElem.duration) {
+                    const progressPercent = (audioElem.currentTime / audioElem.duration) * 100;
+                    progressBarFill.style.width = progressPercent + '%';
+                    currentTimeText.textContent = formatTime(audioElem.currentTime);
+                    durationText.textContent = formatTime(audioElem.duration);
+                }
+            });
+
+            progressBarWrapper.addEventListener('click', (e) => {
+                const width = progressBarWrapper.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audioElem.duration;
+                if (duration) {
+                    audioElem.currentTime = (clickX / width) * duration;
+                }
+            });
+
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return mins + ":" + (secs < 10 ? '0' : '') + secs;
+            }
+
+            async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), timeout);
+                try {
+                    const response = await fetch(url, { ...options, signal: controller.signal });
+                    clearTimeout(id);
+                    return response;
+                } catch (error) {
+                    clearTimeout(id);
+                    throw error;
+                }
+            }
+
+            async function fetchJamendo(query) {
+                try {
+                    const res = await fetchWithTimeout(`https://api.jamendo.com/v3.0/tracks/?client_id=5992a54a&format=json&limit=10&search=${encodeURIComponent(query)}`);
+                    if (!res.ok) throw new Error();
+                    const data = await res.json();
+                    if (data && data.results) {
+                        return data.results.map(t => ({
+                            id: 'jam_' + t.id,
+                            title: t.name,
+                            artist: t.artist_name,
+                            thumb: t.image || 'https://picsum.photos/seed/' + t.id + '/300',
+                            audioUrl: t.audio,
+                            duration: Math.floor(t.duration / 60) + ":" + (t.duration % 60 < 10 ? '0' : '') + (t.duration % 60)
+                        }));
+                    }
+                } catch(e) {}
+                return [];
+            }
+
+            async function fetchAudius(query) {
+                try {
+                    let endpoint = `https://api.audius.co/v1/tracks/trending?app_name=XanterMP3`;
+                    if (query && query !== "hits" && query !== "pop" && query !== "rock") {
+                        endpoint = `https://api.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=XanterMP3`;
+                    }
+
+                    const res = await fetchWithTimeout(endpoint);
+                    if (!res.ok) throw new Error();
+                    const data = await res.json();
+                    
+                    const tracksArray = data.data || data;
+                    if (Array.isArray(tracksArray) && tracksArray.length > 0) {
+                        return tracksArray.map(t => {
+                            let artworkUrl = 'https://picsum.photos/seed/' + t.id + '/300';
+                            if (t.artwork) {
+                                if (typeof t.artwork === 'string') artworkUrl = t.artwork;
+                                else if (t.artwork['480x480']) artworkUrl = t.artwork['480x480'];
+                                else if (Object.values(t.artwork)[0]) artworkUrl = Object.values(t.artwork)[0];
+                            }
+
+                            return {
+                                id: 'aud_' + t.id,
+                                title: t.title || "Unknown Track",
+                                artist: (t.user && t.user.name) ? t.user.name : "Audius Artist",
+                                thumb: artworkUrl,
+                                audioUrl: `https://api.audius.co/v1/tracks/${t.id}/stream?app_name=XanterMP3`,
+                                duration: t.duration ? (Math.floor(t.duration / 60) + ":" + (t.duration % 60 < 10 ? '0' : '') + (t.duration % 60)) : "3:30"
+                            };
+                        });
+                    }
+                } catch(e) {
+                    console.log("Audius fetch error:", e);
+                }
+                return [];
+            }
+
+            async function fetchArchive(query) {
+                try {
+                    const res = await fetchWithTimeout(`https://archive.org/advancedsearch.php?q=${encodeURIComponent(query)}%20AND%20mediatype:(audio)&fl[]=identifier,title,creator&rows=8&output=json`);
+                    if (!res.ok) throw new Error();
+                    const data = await res.json();
+                    if (data && data.response && data.response.docs) {
+                        return data.response.docs.map(doc => ({
+                            id: 'arc_' + doc.identifier,
+                            title: doc.title || "Archive Audio",
+                            artist: doc.creator || "Unknown Artist",
+                            thumb: 'https://picsum.photos/seed/' + doc.identifier + '/300',
+                            audioUrl: `https://archive.org/download/${doc.identifier}/${doc.identifier}.mp3`,
+                            duration: "3:30"
+                        }));
+                    }
+                } catch(e) {}
+                return [];
+            }
+
+            window.fetchAllApis = async function(query = "pop") {
+                searchSuggestions.style.display = 'none';
+                const results = await Promise.allSettled([fetchJamendo(query), fetchAudius(query), fetchArchive(query)]);
+                let combinedTracks = [];
+                results.forEach(res => {
+                    if (res.status === 'fulfilled' && Array.isArray(res.value)) combinedTracks = [...combinedTracks, ...res.value];
+                });
+
+                globalTracks = combinedTracks;
+                if (globalTracks.length === 0) {
+                    globalTracks = [
+                        { id: 'def_1', title: "Acoustic Breeze", artist: "Bensound", thumb: "https://picsum.photos/seed/breeze/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-1.mp3", duration: "6:12" },
+                        { id: 'def_2', title: "Creative Minds", artist: "Bensound Royalty", thumb: "https://picsum.photos/seed/minds/300", audioUrl: "https://www.soundhelix.com/examples/mp3/Soundhelix-Song-2.mp3", duration: "7:05" }
+                    ];
+                }
+
+                globalTracks.forEach(t => {
+                    if (!document.databaseTracks.some(existing => existing.title === t.title)) {
+                        document.databaseTracks.push(t);
+                    }
+                });
+
+                renderAllSections(globalTracks);
+            }
+
+            function renderAllSections(tracks) {
+                const trendsList = document.getElementById('trendsList');
+                const artistsList = document.getElementById('artistsList');
+                const hotSongsList = document.getElementById('hotSongsList');
+
+                trendsList.innerHTML = '';
+                artistsList.innerHTML = '';
+                hotSongsList.innerHTML = '';
+
+                tracks.slice(0, 4).forEach(track => {
+                    trendsList.innerHTML += createSongCardHtml(track);
+                });
+
+                let uniqueArtists = [];
+                let seenNames = new Set();
+                tracks.forEach(t => {
+                    if (!seenNames.has(t.artist)) {
+                        seenNames.add(t.artist);
+                        uniqueArtists.push({ name: t.artist, thumb: t.thumb });
+                    }
+                });
+
+                uniqueArtists.forEach(artist => {
+                    artistsList.innerHTML += `
+                        <div class="artist-item" data-artist="${artist.name}">
+                            <img src="${artist.thumb}" class="artist-avatar">
+                            <span class="artist-name">${artist.name}</span>
+                        </div>
+                    `;
+                });
+
+                tracks.slice(4).forEach(hotTrack => {
+                    hotSongsList.innerHTML += createSongCardHtml(hotTrack);
+                });
+
+                bindPlayerEvents();
+            }
+
+            function createSongCardHtml(track) {
+                const escapedTrack = JSON.stringify(track).replace(/"/g, '&quot;');
+                const trackKey = track.id || track.audioUrl;
+                const metric = songMetrics[trackKey] || { plays: 0, downloads: 0 };
+
+                return `
+                    <div class="song-card">
+                        <div class="song-main-row">
+                            <div class="song-left open-full-player-trigger" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}" data-key="${trackKey}">
+                                <img src="${track.thumb}" class="song-thumb">
+                                <div class="song-info">
+                                    <h4>${track.title}</h4>
+                                    <p>${track.artist} • ${track.duration}</p>
+                                </div>
+                            </div>
+                            <div class="song-actions">
+                                <button class="btn-action play-btn" data-url="${track.audioUrl}" data-title="${track.title}" data-artist="${track.artist}" data-thumb="${track.thumb}" data-key="${trackKey}"><i class="fa-solid fa-play"></i></button>
+                                <button class="btn-action btn-download-icon download-btn" onclick='downloadSongFile("${track.audioUrl}", "${track.title}.mp3", this, ${escapedTrack}, "${trackKey}")' title="Download"><i class="fa-solid fa-download"></i></button>
+                            </div>
+                        </div>
+                        <div class="social-metrics-bar">
+                            <div class="metric-pill">
+                                <i class="fa-solid fa-headphones" style="color: var(--accent-red);"></i> <span id="plays-${trackKey}">${metric.plays}</span> Plays
+                            </div>
+                            <div class="metric-pill">
+                                <i class="fa-solid fa-download" style="color: #3b82f6;"></i> <span id="downloads-${trackKey}">${metric.downloads}</span> Downloads
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function bindPlayerEvents() {
+                document.querySelectorAll('.play-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const b = e.currentTarget;
+                        playSong(b.dataset.url, b.dataset.title, b.dataset.artist, b.dataset.thumb, b.dataset.key);
+                    });
+                });
+
+                document.querySelectorAll('.open-full-player-trigger').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const b = e.currentTarget;
+                        playSong(b.dataset.url, b.dataset.title, b.dataset.artist, b.dataset.thumb, b.dataset.key);
+                        fullPlayerModal.style.display = 'flex';
+                    });
+                });
+
+                document.querySelectorAll('.artist-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const artistName = item.dataset.artist;
+                        searchInput.value = artistName;
+                        window.fetchAllApis(artistName);
+                    });
+                });
+            }
+
+            let searchTimeout = null;
+            searchInput.addEventListener('input', () => {
+                const val = searchInput.value.trim();
+                clearTimeout(searchTimeout);
+
+                if (val.length === 0) {
+                    searchSuggestions.style.display = 'none';
+                    return;
+                }
+
+                searchTimeout = setTimeout(async () => {
+                    searchSuggestions.innerHTML = `<div class="suggestion-item" style="justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Searching...</div>`;
+                    searchSuggestions.style.display = 'block';
+
+                    const apiResults = await Promise.allSettled([
+                        fetchJamendo(val),
+                        fetchAudius(val),
+                        fetchArchive(val)
+                    ]);
+
+                    let liveMatches = [];
+                    apiResults.forEach(res => {
+                        if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+                            liveMatches = [...liveMatches, ...res.value];
+                        }
+                    });
+
+                    if (liveMatches.length > 0) {
+                        searchSuggestions.innerHTML = '';
+                        liveMatches.slice(0, 6).forEach(track => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            div.innerHTML = `
+                                <img src="${track.thumb}" style="width: 30px; height: 30px; border-radius: 6px; object-fit: cover;">
+                                <div style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    ${track.title} <span style="color: var(--text-muted); font-size: 10px;">by ${track.artist}</span>
+                                </div>
+                            `;
+                            div.addEventListener('click', () => {
+                                searchInput.value = track.title;
+                                searchSuggestions.style.display = 'none';
+                                playSong(track.audioUrl, track.title, track.artist, track.thumb, track.id || track.audioUrl);
+                                fullPlayerModal.style.display = 'flex';
+                            });
+                            searchSuggestions.appendChild(div);
+                        });
+                        searchSuggestions.style.display = 'block';
+                    } else {
+                        searchSuggestions.innerHTML = `<div class="suggestion-item" style="justify-content: center; color: var(--text-muted);">No results found.</div>`;
+                    }
+                }, 500);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.style.display = 'none';
+                }
+            });
+
+            searchBtn.addEventListener('click', () => window.fetchAllApis(searchInput.value || "pop"));
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.fetchAllApis(searchInput.value || "pop"); });
+
+            document.getElementById('seeAllTrends').addEventListener('click', () => {
+                popupTitle.textContent = "Full Trending List";
+                popupBodyContent.innerHTML = `
+                    <div class="song-list" style="max-height: 70vh; overflow-y: auto;">
+                        ${globalTracks.map(track => {
+                            const trackKey = track.id || track.audioUrl;
+                            return `
+                                <div class="song-card">
+                                    <div class="song-main-row">
+                                        <div class="song-left" onclick="playSong('${track.audioUrl}', '${track.title}', '${track.artist}', '${track.thumb}', '${trackKey}'); closePopup();">
+                                            <img src="${track.thumb}" class="song-thumb">
+                                            <div class="song-info">
+                                                <h4>${track.title}</h4>
+                                                <p>${track.artist} •${track.duration}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                genericPopupModal.style.display = 'flex';
+            });
+
+            document.getElementById('seeAllArtists').addEventListener('click', () => {
+                let uniqueArtists = [];
+                let seenNames = new Set();
+                globalTracks.forEach(t => {
+                    if (!seenNames.has(t.artist)) {
+                        seenNames.add(t.artist);
+                        uniqueArtists.push({ name: t.artist, thumb: t.thumb });
+                    }
+                });
+
+                popupTitle.textContent = "All Artists";
+                popupBodyContent.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 70vh; overflow-y: auto; padding: 5px;">
+                        ${uniqueArtists.map(artist => `
+                            <div class="artist-modal-item" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: 12px; cursor: pointer;" onclick="document.getElementById('searchInput').value = '${artist.name.replace(/'/g, "\\'")}'; closePopup(); window.fetchAllApis('${artist.name.replace(/'/g, "\\'")}');">
+                                <img src="${artist.thumb}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                                <div style="overflow: hidden;">
+                                    <h4 style="font-size: 12px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${artist.name}</h4>
+                                    <p style="font-size: 10px; color: var(--text-muted);">Artist</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                genericPopupModal.style.display = 'flex';
+            });
+
+            document.getElementById('seeAllHot').addEventListener('click', () => window.fetchAllApis("rock"));
+
+            renderLocalUploads();
+            window.fetchAllApis("hits");
+        });
+    </script>
+
+    <!-- Usajili wa Service Worker kwa ajili ya PWA -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => {
-                        console.log('Service Worker imesajiliwa mafanikio:', reg.scope);
-                    })
-                    .catch((err) => {
-                        console.log('Ujasajili wa Service Worker umeshindwa:', err);
-                    });
+                    .then((reg) => console.log('Service Worker imesajiliwa mafanikio!'))
+                    .catch((err) => console.log('Imeshindwa kusajili:', err));
             });
         }
     </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((registration) => {
-          console.log('Service Worker imesajiliwa kikamilifu:', registration.scope);
-        })
-        .catch((error) => {
-          console.log('Imeshindwa kusajili Service Worker:', error);
-        });
-    });
-  }
-</script>
 
 </body>
 </html>
