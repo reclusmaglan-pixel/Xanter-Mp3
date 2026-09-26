@@ -158,7 +158,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             z-index: 200;
             display: none;
-            max-height: 220px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -574,7 +574,6 @@
             font-size: 24px !important;
         }
 
-        /* --- DIRISHA LA MODAL LINAJAZA SKRINI NZIMA --- */
         .custom-popup-modal {
             position: fixed !important;
             top: 0 !important;
@@ -878,8 +877,6 @@
             
             let songMetrics = JSON.parse(localStorage.getItem('xanter_metrics')) || {};
 
-            const suggestionDictionary = ["Acoustic", "Bensound", "Pop Music", "Rock & Roll", "Piano Instrumentals", "Electronic", "Remix Beats"];
-            
             const audioElem = document.getElementById('mainAudioElement');
             const playerBar = document.getElementById('audioPlayerBar');
             const playerThumb = document.getElementById('playerThumb');
@@ -918,7 +915,7 @@
 
             homeBtn.addEventListener('click', () => {
                 searchInput.value = '';
-                fetchAllApis("hits");
+                window.fetchAllApis("hits");
             });
 
             async function uploadToCloudinary(file, resourceType = 'auto') {
@@ -1318,6 +1315,8 @@
                 }
             }
 
+            window.playSong = playSong;
+
             async function downloadSongFile(url, filename, buttonElement, trackInfo = null, trackKey = "") {
                 const key = trackKey || url;
                 incrementMetric(key, 'downloads');
@@ -1457,20 +1456,38 @@
 
             async function fetchAudius(query) {
                 try {
-                    const res = await fetchWithTimeout(`https://api.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=XanterMP3`);
+                    let endpoint = `https://api.audius.co/v1/tracks/trending?app_name=XanterMP3`;
+                    if (query && query !== "hits" && query !== "pop" && query !== "rock") {
+                        endpoint = `https://api.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=XanterMP3`;
+                    }
+
+                    const res = await fetchWithTimeout(endpoint);
                     if (!res.ok) throw new Error();
                     const data = await res.json();
-                    if (data && data.data) {
-                        return data.data.map(t => ({
-                            id: 'aud_' + t.id,
-                            title: t.title,
-                            artist: t.user.name,
-                            thumb: t.artwork ? (t.artwork['480x480'] || Object.values(t.artwork)[0]) : 'https://picsum.photos/seed/' + t.id + '/300',
-                            audioUrl: `https://api.audius.co/v1/tracks/${t.id}/stream?app_name=XanterMP3`,
-                            duration: Math.floor(t.duration / 60) + ":" + (t.duration % 60 < 10 ? '0' : '') + (t.duration % 60)
-                        }));
+                    
+                    const tracksArray = data.data || data;
+                    if (Array.isArray(tracksArray) && tracksArray.length > 0) {
+                        return tracksArray.map(t => {
+                            let artworkUrl = 'https://picsum.photos/seed/' + t.id + '/300';
+                            if (t.artwork) {
+                                if (typeof t.artwork === 'string') artworkUrl = t.artwork;
+                                else if (t.artwork['480x480']) artworkUrl = t.artwork['480x480'];
+                                else if (Object.values(t.artwork)[0]) artworkUrl = Object.values(t.artwork)[0];
+                            }
+
+                            return {
+                                id: 'aud_' + t.id,
+                                title: t.title || "Unknown Track",
+                                artist: (t.user && t.user.name) ? t.user.name : "Audius Artist",
+                                thumb: artworkUrl,
+                                audioUrl: `https://api.audius.co/v1/tracks/${t.id}/stream?app_name=XanterMP3`,
+                                duration: t.duration ? (Math.floor(t.duration / 60) + ":" + (t.duration % 60 < 10 ? '0' : '') + (t.duration % 60)) : "3:30"
+                            };
+                        });
                     }
-                } catch(e) {}
+                } catch(e) {
+                    console.log("Audius fetch error:", e);
+                }
                 return [];
             }
 
@@ -1493,7 +1510,7 @@
                 return [];
             }
 
-            async function fetchAllApis(query = "pop") {
+            window.fetchAllApis = async function(query = "pop") {
                 searchSuggestions.style.display = 'none';
                 const results = await Promise.allSettled([fetchJamendo(query), fetchAudius(query), fetchArchive(query)]);
                 let combinedTracks = [];
@@ -1609,62 +1626,132 @@
                     item.addEventListener('click', () => {
                         const artistName = item.dataset.artist;
                         searchInput.value = artistName;
-                        fetchAllApis(artistName);
+                        window.fetchAllApis(artistName);
                     });
                 });
             }
 
+            // --- LIVE SEARCH API (INAYOLETEKA KUTOKA MTANDAONI UKIANDIKA) ---
+            let searchTimeout = null;
             searchInput.addEventListener('input', () => {
-                const val = searchInput.value.trim().toLowerCase();
-                if (val.length === 0) { searchSuggestions.style.display = 'none'; return; }
+                const val = searchInput.value.trim();
+                clearTimeout(searchTimeout);
 
-                let matches = [];
-                if (document.databaseTracks) {
-                    matches.push(...document.databaseTracks.filter(t => t.title.toLowerCase().includes(val) || t.artist.toLowerCase().includes(val)).map(t => ({ text: t.title, sub: `by ${t.artist}`, type: 'song', data: t })));
-                }
-                matches.push(...suggestionDictionary.filter(kw => kw.toLowerCase().includes(val)).map(kw => ({ text: kw, sub: 'Search keyword', type: 'keyword', data: null })));
-
-                let uniqueMatches = [], seenTexts = new Set();
-                for (let m of matches) {
-                    if (!seenTexts.has(m.text.toLowerCase())) { seenTexts.add(m.text.toLowerCase()); uniqueMatches.push(m); }
+                if (val.length === 0) {
+                    searchSuggestions.style.display = 'none';
+                    return;
                 }
 
-                const finalMatches = uniqueMatches.slice(0, 6);
-                if (finalMatches.length > 0) {
-                    searchSuggestions.innerHTML = '';
-                    finalMatches.forEach(m => {
-                        const div = document.createElement('div');
-                        div.className = 'suggestion-item';
-                        div.innerHTML = `<i class="fa-solid fa-magnifying-glass" style="font-size:11px; color:var(--accent-red);"></i> <div style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.text} <span style="color:var(--text-muted); font-size:9px;">(${m.sub})</span></div>`;
-                        div.addEventListener('click', () => {
-                            searchInput.value = m.text;
-                            searchSuggestions.style.display = 'none';
-                            if (m.type === 'song' && m.data.audioUrl) {
-                                playSong(m.data.audioUrl, m.data.title, m.data.artist, m.data.thumb, m.data.id || m.data.audioUrl);
-                                fullPlayerModal.style.display = 'flex';
-                            } else {
-                                fetchAllApis(m.text);
-                            }
-                        });
-                        searchSuggestions.appendChild(div);
-                    });
+                // Kusubiri kidogo mtumiaji amalize kuandika (debounce) kabla ya kupiga API
+                searchTimeout = setTimeout(async () => {
+                    searchSuggestions.innerHTML = `<div class="suggestion-item" style="justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Inatafuta...</div>`;
                     searchSuggestions.style.display = 'block';
-                } else { searchSuggestions.style.display = 'none'; }
+
+                    const apiResults = await Promise.allSettled([
+                        fetchJamendo(val),
+                        fetchAudius(val),
+                        fetchArchive(val)
+                    ]);
+
+                    let liveMatches = [];
+                    apiResults.forEach(res => {
+                        if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+                            liveMatches = [...liveMatches, ...res.value];
+                        }
+                    });
+
+                    if (liveMatches.length > 0) {
+                        searchSuggestions.innerHTML = '';
+                        liveMatches.slice(0, 6).forEach(track => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            div.innerHTML = `
+                                <img src="${track.thumb}" style="width: 30px; height: 30px; border-radius: 6px; object-fit: cover;">
+                                <div style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    ${track.title} <span style="color: var(--text-muted); font-size: 10px;">by ${track.artist}</span>
+                                </div>
+                            `;
+                            div.addEventListener('click', () => {
+                                searchInput.value = track.title;
+                                searchSuggestions.style.display = 'none';
+                                playSong(track.audioUrl, track.title, track.artist, track.thumb, track.id || track.audioUrl);
+                                fullPlayerModal.style.display = 'flex';
+                            });
+                            searchSuggestions.appendChild(div);
+                        });
+                        searchSuggestions.style.display = 'block';
+                    } else {
+                        searchSuggestions.innerHTML = `<div class="suggestion-item" style="justify-content: center; color: var(--text-muted);">Hakuna matokeo yaliyopatikana.</div>`;
+                    }
+                }, 500);
             });
 
             document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) searchSuggestions.style.display = 'none';
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.style.display = 'none';
+                }
             });
 
-            searchBtn.addEventListener('click', () => fetchAllApis(searchInput.value || "pop"));
-            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchAllApis(searchInput.value || "pop"); });
+            searchBtn.addEventListener('click', () => window.fetchAllApis(searchInput.value || "pop"));
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.fetchAllApis(searchInput.value || "pop"); });
 
-            document.getElementById('seeAllTrends').addEventListener('click', () => fetchAllApis("hits"));
-            document.getElementById('seeAllArtists').addEventListener('click', () => fetchAllApis("pop"));
-            document.getElementById('seeAllHot').addEventListener('click', () => fetchAllApis("rock"));
+            // --- SEE ALL POPUPS ---
+            document.getElementById('seeAllTrends').addEventListener('click', () => {
+                popupTitle.textContent = "Orodha Kamili ya Trending";
+                popupBodyContent.innerHTML = `
+                    <div class="song-list" style="max-height: 70vh; overflow-y: auto;">
+                        ${globalTracks.map(track => {
+                            const trackKey = track.id || track.audioUrl;
+                            return `
+                                <div class="song-card">
+                                    <div class="song-main-row">
+                                        <div class="song-left" onclick="playSong('${track.audioUrl}', '${track.title}', '${track.artist}', '${track.thumb}', '${trackKey}'); closePopup();">
+                                            <img src="${track.thumb}" class="song-thumb">
+                                            <div class="song-info">
+                                                <h4>${track.title}</h4>
+                                                <p>${track.artist} •${track.duration}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                genericPopupModal.style.display = 'flex';
+            });
+
+            document.getElementById('seeAllArtists').addEventListener('click', () => {
+                let uniqueArtists = [];
+                let seenNames = new Set();
+                globalTracks.forEach(t => {
+                    if (!seenNames.has(t.artist)) {
+                        seenNames.add(t.artist);
+                        uniqueArtists.push({ name: t.artist, thumb: t.thumb });
+                    }
+                });
+
+                popupTitle.textContent = "Wasanii Wote";
+                popupBodyContent.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 70vh; overflow-y: auto; padding: 5px;">
+                        ${uniqueArtists.map(artist => `
+                            <div class="artist-modal-item" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: 12px; cursor: pointer;" onclick="document.getElementById('searchInput').value = '${artist.name.replace(/'/g, "\\'")}'; closePopup(); window.fetchAllApis('${artist.name.replace(/'/g, "\\'")}');">
+                                <img src="${artist.thumb}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                                <div style="overflow: hidden;">
+                                    <h4 style="font-size: 12px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${artist.name}</h4>
+                                    <p style="font-size: 10px; color: var(--text-muted);">Msanii</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                genericPopupModal.style.display = 'flex';
+            });
+
+            document.getElementById('seeAllHot').addEventListener('click', () => window.fetchAllApis("rock"));
 
             renderLocalUploads();
-            fetchAllApis("hits");
+            window.fetchAllApis("hits");
         });
     </script>
 </body>
