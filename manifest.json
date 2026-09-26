@@ -14,6 +14,13 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "Screenshot_20260926_115921_Acode.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg"
+    }
+  ],
   "id": "/index.html",
   "orientation": "portrait"
 }
